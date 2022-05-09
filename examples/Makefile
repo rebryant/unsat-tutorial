@@ -1,15 +1,24 @@
-SDIR =~/repos/kissat/build
+RDIR = ../..
+SDIR = $(RDIR)/kissat/build
 SOLVE = $(SDIR)/kissat
-CDIR =~/repos/drat-trim
-CHECK = $(CDIR)/drat-trim
+CDIR = $(RDIR)/drat-trim
+DRAT = $(CDIR)/drat-trim
+LRAT = $(CDIR)/lrat-check
 
 clean:
-	rm *~
+	rm -f *~
+	rm -f *.*drat *.*lrat *data 
 
-.SUFFIXES: .cnf .drat .lrat
+.SUFFIXES: .cnf .gen-drat .gen-lrat .unsat-check-data .sat-gen-data
 
-.cnf.drat:
-	-$(SOLVE) --no-binary $< $@
+.cnf.gen-drat:
+	-$(SOLVE) --unsat --no-binary $< $@ | tee $*.unsat-gen-data
 
-.drat.lrat:
-	$(CHECK) $*.cnf $< -L $@
+.cnf.sat-gen-data:
+	-$(SOLVE) $< | tee $@
+
+.gen-drat.unsat-check-data:
+	$(DRAT) $*.cnf $< | tee $@
+
+.gen-drat.gen-lrat:
+	$(DRAT) $*.cnf $< -L $@ | tee $*.gen-lrat-data
