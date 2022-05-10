@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 #####################################################################################
 # Copyright (c) 2021 Marijn Heule, Randal E. Bryant, Carnegie Mellon University
@@ -27,7 +27,7 @@ import re
 
 def usage(name):
     print("Usage: %s [nth] tphrase file ...")
-    print(" nth: Look for nth numeric field in line (count from 1)")
+    print(" nth: Look for nth numeric field in line (count from 1).  -n to count from end backward")
 
 
 # Will grep for line containing trigger phrase.
@@ -59,6 +59,9 @@ def lineSplit(s):
 
 def nthNumber(fields, n = 1):
     count = 0
+    if n < 0:
+        fields.reverse()
+        n = -n
     for field in fields:
         try:
             val = int(field)
