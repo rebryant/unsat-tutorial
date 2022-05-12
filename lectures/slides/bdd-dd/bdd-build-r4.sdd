@@ -1,0 +1,40 @@
+# Reduce leaves
+# Left and right borders
+n LB   -250     0 t=e
+n RB    250     0 t=e
+n TB      0   400 t=e
+n R1      0   375 t=r
+n N1_1    0   300 lab=$x_1$
+n N2_1 -150   200 lab=$x_2$
+n N2_2  150   200 lab=$x_2$
+n N3_1 -225   100 lab=$x_3$
+n N3_1L -235  100 t=e
+n N3_1R -215  100 t=e
+n N3_2  -75   100 lab=$x_3$
+n N3_3   75   100 lab=$x_3$
+n N3_4  225   100 lab=$x_3$
+#n L4_1 -262     0 lab=$\bot$ t=l
+#n L4_2 -187     0 lab=$\bot$ t=l
+n L4_3 -112      0 lab=$\bot$ t=l
+n L4_3L -122     0 t=e
+n L4_3R -102     0 t=e
+#n L4_4  -37     0 lab=$\top$ t=l
+#n L4_5   37     0 lab=$\bot$ t=l
+n L4_6  112     0 lab=$\top$ t=l
+#n L4_7  187     0 lab=$\bot$ t=l
+#n L4_8  262     0 lab=$\top$ t=l
+e R1 N1_1
+e N1_1 N2_1 t=l
+e N1_1 N2_2 t=h
+e N2_1 N3_1 t=l
+e N2_1 N3_2 t=h
+e N2_2 N3_3 t=l
+e N2_2 N3_4 t=h
+e N3_1L L4_3L t=l
+e N3_1R L4_3R t=h
+e N3_2 L4_3 t=l
+e N3_2 L4_6 t=h
+e N3_3 L4_3 t=l
+e N3_3 L4_6 t=h
+e N3_4 L4_3 t=l
+e N3_4 L4_6 t=h

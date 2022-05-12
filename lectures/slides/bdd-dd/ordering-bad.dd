@@ -1,0 +1,45 @@
+# Example of bad variable ordering
+n N1_1  -25   600 lab=$a_1$
+n N2_1 -150  500 lab=$a_2$
+n N2_2  100  500 lab=$a_2$
+n N3_1 -212  400 lab=$a_3$
+n N3_2  -97  400 lab=$a_3$
+n N3_3   37  400 lab=$a_3$
+n N3_4  162  400 lab=$a_3$
+n N4_1    0  300 lab=$b_1$
+n N4_2   75  300 lab=$b_1$
+n N4_3  150  300 lab=$b_1$
+n N4_4  225  300 lab=$b_1$
+n N5_1 -100   200 lab=$b_2$
+n N5_2  -25   200 lab=$b_2$
+n N6_1 -112   100 lab=$b_3$
+n L0   -125     0 t=l lab=$\bot$
+n L1    125     0 t=l lab=$\top$
+e N1_1 N2_1 t=l
+e N1_1 N2_2 t=h
+e N2_1 N3_1 t=l
+e N2_1 N3_2 t=h
+e N2_2 N3_4 t=l
+e N2_2 N3_3 t=h
+e N3_1   L0 t=l
+e N3_1 N6_1 t=h
+e N3_2 N5_2 t=l
+e N3_2 N5_1 t=h
+e N3_3 N4_2 t=l
+e N3_3 N4_1 t=h
+e N3_4 N4_3 t=l
+e N3_4 N4_4 t=h
+e N4_1 N5_1 t=l
+e N4_1   L1 t=h
+e N4_2 N5_2 t=l
+e N4_2   L1 t=h
+e N4_3   L0 t=l
+e N4_3   L1 t=h
+e N4_4 N6_1 t=l
+e N4_4   L1 t=h
+e N5_1 N6_1 t=l
+e N5_1   L1 t=h
+e N5_2   L0 t=l
+e N5_2   L1 t=h
+e N6_1   L0 t=l
+e N6_1   L1 t=h

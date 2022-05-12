@@ -1,0 +1,18 @@
+# Argument B to apply example
+n TB    0    450 t=e
+n N1    0    400 lab=$a$
+t N1 $G_1$ p=r
+n N3   75    200 lab=$c$
+t N3 $G_5$ p=r
+n N4  -75    100 lab=$d$
+t N4 $G_2$ p=l
+n L0  -75      0 lab=$\bot$ t=l
+t L0 $G_3$ p=l
+n L1   75      0 lab=$\top$ t=l
+t L1 $G_4$ p=r
+e N1 N4 t=l
+e N1 N3 t=h
+e N3 L1 t=l
+e N3 N4 t=h
+e N4 L0 t=l
+e N4 L1 t=h

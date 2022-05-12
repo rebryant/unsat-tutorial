@@ -1,0 +1,32 @@
+# Expansion of apply example
+n TB    0    450 t=e
+n LB  -305   -30 t=e
+n RB   280   -30 t=e
+n N1    0    400 lab=$a$
+t N1   $F_1,G_1$ p=l
+n N2  -100    300 lab=$b$
+t N2   $F_2,G_2$ p=l
+n N3_1  0    200 lab=$c$
+t N3_1 $F_6,G_2$ p=l off=0
+#n N3_2  100  200 lab=$c$
+#t N3_2 $F_6,G_5$ p=r
+n N4_1 -125  100 lab=$d$
+t N4_1 $F_3,G_2$ p=l
+#n N4_2   50  100 lab=$\top$ t=l
+#t N4_2 $F_5,G_2$ p=l off=0
+#n N4_3  150  100 lab=$\top$ t=l
+#t N4_3 $F_3,G_3$ p=r
+n L0   -175    0 lab=$\bot$ t=l
+t L0   $F_4,G_3$ p=l
+n L1    -75    0 lab=$\top$ t=l
+t L1   $F_5,G_4$ p=r
+e N1   N2     t=l
+#e N1   N3_2   t=h
+e N2   N4_1   t=l
+e N2   N3_1   t=h
+e N3_1 N4_1   t=l
+#e N3_1 N4_2   t=h
+#e N3_2 N4_3   t=l
+#e N3_2 N4_2   t=h
+e N4_1 L0     t=l
+e N4_1 L1     t=h

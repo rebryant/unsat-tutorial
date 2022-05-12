@@ -1,0 +1,20 @@
+# Final version
+# Left and right borders
+n LB   -250     0 t=e
+n RB    250     0 t=e
+n TB      0   400 t=e
+n R1      0   375 t=r
+n N1_1    0   300 lab=$x_1$
+
+n N2_1  -150   200 lab=$x_2$
+n N3_3    75   100 lab=$x_3$
+n L4_3  -112     0 lab=$\bot$ t=l
+n L4_6   112     0 lab=$\top$ t=l
+e R1 N1_1
+e N1_1 N2_1 t=l
+e N1_1 N3_3 t=h
+e N2_1 L4_3 t=l
+e N2_1 N3_3 t=h
+e N3_3 L4_3 t=l
+e N3_3 L4_6 t=h
+
