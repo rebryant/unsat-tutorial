@@ -43,7 +43,7 @@ sinz = False
 # in hole i (numbered from 1)
 
 def pij(i, j):
-    return 1 + (i-1)*pigeonCount + (j-1)
+    return (i-1)*pigeonCount + j
 
 def generate(froot):
     cwriter = writer.LazyCnfWriter(froot, verbose)
