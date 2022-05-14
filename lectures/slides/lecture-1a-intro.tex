@@ -15,7 +15,6 @@
 \usepackage{pgfplots}
 \usepackage{booktabs}
 \usepackage{alltt}
-\usepackage{bussproofs}
 
 \newenvironment{ccode}{\begin{alltt}\footnotesize}{\end{alltt}}
 
@@ -91,7 +90,7 @@
 
 \institute{\includegraphics[height=50pt]{figs/CMU_Logo}}
 
-\date{\textcolor{black}{\today}}
+\date{\textcolor{black}{June, 2022}}
 
 \setbeamertemplate{footline}
 {
@@ -129,6 +128,7 @@
 \newcommand{\dnot}{\obar{d}}
 \newcommand{\tnot}{\obar{t}}
 \newcommand{\znot}{\obar{z}}
+\newcommand{\ite}{{\it ITE}}
 
 \newtheorem{conjecture}[theorem]{Conjecture}
 \newtheorem{nonconj}[theorem]{(Not actually a) conjecture}
@@ -151,7 +151,7 @@
 \medskip
   \item For many applications, formulas should be unsatisfiable
     \begin{itemize}
-    \item Only trust result if program generates a checkable proof
+    \item Program should generate a checkable proof
     \item There is a well-developed proof infrastructure
     \end{itemize}
 
@@ -189,13 +189,11 @@ int abs_ref(int x) \verb:{:
 \end{minipage}
 
 \medskip
-\begin{itemize}
-\item Assume for {\tt int}:
+Assume for {\tt int}:
   \begin{itemize}
   \item 32-bit word
   \item Two's complement representation
   \end{itemize}
-\end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -229,14 +227,13 @@ int main() \verb:{:
 \end{ccode}
 \end{minipage}
 
-\medskip
-\begin{itemize}
-\item Assume for {\tt int}:
+Assume for {\tt int}:
   \begin{itemize}
   \item 32-bit word
   \item Two's complement representation
   \end{itemize}
-\end{itemize}
+
+
 \end{frame}
 
 
@@ -280,7 +277,7 @@ int main() \verb:{:
 {\bf Two-Coloring}
 \begin{itemize}
 \item For integers $i \in \{1, 2, \ldots, n\}$, assign $C_i \in \{\textsf{red}, \textsf{blue}\}$
-\item For every P-Triple $a, b, c$, Cannot have $C_a = C_b = C_c$.
+\item For every P-Triple $a, b, c$, cannot have $C_a = C_b = C_c$.
 \end{itemize}
 
 \only<1>{
@@ -493,7 +490,7 @@ int main() \verb:{:
     \end{itemize}
     }
     \only <3>{
-    {\bf Long-Term Goals}
+    {\bf My Long-Term Goals}
     \begin{itemize}
     \item Enable proof generation for other SAT algorithms
     \item Develop checkable proof infrastructure for other domains
@@ -520,15 +517,15 @@ int main() \verb:{:
 
 {\bf Clauses}
 \begin{itemize}
-\item $C = \{l_1, l_2, \ldots, l_k\}$~~~~~Set of literals
+\item \makebox[1.5in][l]{$C = \{\ell_1, \ell_2, \ldots, \ell_k\}$}Set of literals
 \item $\anot \lor b \lor \cnot$
-\item $\bot = \emptyset$~~~~~~~~~~~~~~~~~ Empty clause (False)
+\item \makebox[1.5in][l]{$\bot = \emptyset$}Empty clause (False)
 \end{itemize}
 
 {\bf Formula}
 \begin{itemize}
-\item $\phi = \{C_1, C_2, \ldots, C_m\}$
-\item Conjunction of clauses
+\item $\phi = \{ C_1,  C_2, \ldots, C_m \}$
+\item \makebox[1.5in][l]{$C_1 \land  C_2 \land \cdots \land C_m$}Conjunction of clauses
 \end{itemize}
 }
 
@@ -541,19 +538,21 @@ int main() \verb:{:
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{cc}
     \toprule
-    \makebox[2in]{Boolean Formula} & \makebox[2in]{CNF} \\
+    \makebox[1.5in]{Boolean Formula} & \makebox[1.5in]{CNF} \\
     \midrule
     $a \land b \rightarrow c$ & $\anot \lor \bnot \lor c$ \\
     $a \rightarrow b \lor c$ & $\anot \lor b \lor c$ \\
     $(a \lor b) \rightarrow c$ & $(\anot \lor c) \land (\bnot \lor c)$ \\
     $a \rightarrow (b \land c)$ & $(\anot \lor c) \land (\anot \lor c)$ \\
-    \midrule
-    ${\it AtLeastOne}(a, b, c)$ & $a \lor b \lor c$ \\
-    ${\it AtMostOne}(a, b, c)$ & $(\anot \lor \bnot) \land (\anot \lor \cnot) \land (\bnot \lor \cnot)$ \\
+    $\ite(a, b, c)$ & $(\anot \lor b) \land (a \lor c)$ \\
     \bottomrule
-
   \end{tabular}
 \end{center}
+
+\begin{itemize}
+\item Advice: think in terms of implication.
+\item E.g., $\ite(a, b, c) =  (a\rightarrow b) \land (\obar{a} \rightarrow c)$
+\end{itemize}
 
 
 }
@@ -563,9 +562,9 @@ int main() \verb:{:
 
 \begin{center}
   \renewcommand{\arraystretch}{1.2}
-  \begin{tabular}{cc}
+  \begin{tabular}{ccl}
     \toprule
-    \makebox[2in]{Boolean Formula} & \makebox[2in]{CNF} \\
+    \makebox[1.5in]{Boolean Formula} & \makebox[1.5in]{CNF} & \makebox[1in]{Explanation}\\
     \midrule
     ${\it OddParity}(a, b, c)$ &
     $\begin{array}{ll}
@@ -573,7 +572,13 @@ int main() \verb:{:
       (\anot \lor b \lor \cnot) & \land\\
       (a \lor \bnot \lor \cnot) & \land\\
       (a \lor b \lor c) & \\
-    \end{array}$ \\
+    \end{array}$ 
+    &
+    \begin{tabular}{l}
+      Even number  \\of negations
+    \end{tabular}
+
+    \\
 \midrule
     ${\it EvenParity}(a, b, c)$ &
     $\begin{array}{ll}
@@ -581,7 +586,12 @@ int main() \verb:{:
       (a \lor b \lor \cnot) & \land\\
       (a \lor \bnot \lor c) & \land \\
       (\anot \lor b \lor c) & \\
-    \end{array}$ \\
+    \end{array}$ 
+    &
+    \begin{tabular}{l}
+      Odd number  \\of negations
+    \end{tabular}
+    \\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -665,6 +675,46 @@ int main() \verb:{:
 \item $4(n-2)$ clauses
 \end{itemize}
 } %% Frame
+
+\frame{
+\frametitle{Clausal Thinking: Cardinality Constraints}
+
+\begin{eqnarray*}
+a_1 \, x_1 + a_2 \, x_2 + \cdots + a_n \, x_n & \geq & t
+\end{eqnarray*}
+
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.1}
+\begin{tabular}{rcc}
+  \makebox[1in]{Constraint} & \makebox[.5in]{$a_i$} & \makebox[.5in]{$t$} \\
+\midrule
+ ${\it AtLeastOne}$ &  $\{0, 1\}$ &  $1$ \\
+ ${\it AtMostOne}$  &  $\{0, -1\}$ & $-1$ \\
+\end{tabular}
+
+\end{center}
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{cc}
+    \toprule
+    \makebox[2in]{Boolean Formula} & \makebox[2in]{CNF} \\
+    \midrule
+    ${\it AtLeastOne}(a, b, c)$ & $a \lor b \lor c$ \\
+    ${\it AtMostOne}(a, b, c)$ & $(\anot \lor \bnot) \land (\anot \lor \cnot) \land (\bnot \lor \cnot)$ \\
+    ${\it AtMostOne}(a, b, c, d)$ &
+    $\begin{array}{ll}
+      (\anot \lor \bnot) \land (\anot \lor \cnot) \land (\anot \lor \dnot) & \land \\
+      (\bnot \lor \cnot) \land (\bnot \lor \dnot) \land (\cnot \lor \dnot) & \\
+    \end{array}$ \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+
+}
+
 
 \frame{
 \frametitle{Encoding Arbitrary Formulas / Circuits}
@@ -857,21 +907,19 @@ int main() \verb:{:
 
 \begin{center}
 \begin{tikzpicture}[scale = 0.8]
-
-
-\node at (5.5,4.0) {$a \lor \dnot$};
-\node at (7.5,4.0) {$a \lor d$};
+\node at (5.5,4.0) {$a \lor d$};
+\node at (7.5,4.0) {$a \lor \dnot$};
 \draw[thick] (4.5,3.5) -- (8.5,3.5);
 \node at (5.0,3.0) {$a$};
 \node at (8.0,3.0) {$a$};
 
-\node at (3.0,3.0) {$\anot \lor \bnot \lor \cnot$};
+\node at (3.0,3.0) {$\anot \lor \bnot \lor c$};
 \draw[thick] (2.0,2.5) -- (5.5,2.5);
-\node at (4.0,2.0) {$\bnot \lor \cnot$};
+\node at (4.0,2.0) {$\bnot \lor c$};
 
-\node at (10.0,3.0) {$\anot \lor \bnot \lor c$};
+\node at (10.0,3.0) {$\anot \lor \bnot \lor \cnot$};
 \draw[thick] (7.5,2.5) -- (11.0,2.5);
-\node at (9.0,2.0) {$\bnot \lor c$};
+\node at (9.0,2.0) {$\bnot \lor \cnot$};
 \draw[thick] (3.5,1.5) -- (9.5,1.5);
 \node at (6.5,1.0) {$\bnot$};
 
