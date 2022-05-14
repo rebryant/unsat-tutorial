@@ -339,7 +339,7 @@ xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
       \bottomrule
   \only<2->{7} & \only<2->{${b}$}        & \only<4-5>{*} \\
   \only<4->{8} & \only<4->{${\cnot}$}    & \only<5>{*} \\
-  \only<5->{9} & \only<4->{${\bot}$}     & \\
+  \only<5->{9} & \only<5->{${\bot}$}     & \\
     \end{tabular}
 \end{minipage}
 \end{frame}
@@ -517,6 +517,31 @@ xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
 
 \begin{frame}
 \frametitle{Proof File Examples}
+
+\centering{
+   \begin{tabular}{cll}
+   \multicolumn{3}{l}{Proof} \\
+  \midrule
+  \makebox[0.5in][c]{$C_7$} & \makebox[0.75in][l]{${b}$}        & \makebox[1in][l]{$C_5, C_6$} \\
+  {$C_8$} & {${\cnot}$}    & {$C_7, C_1, C_3, C_4$} \\
+  {$C_9$} & {${\bot}$}     & {$C_7, C_8, C_2, C_3, C_4$} \\
+  \bottomrule
+  &&\\
+  \multicolumn{3}{l}{DRAT Proof File} \\
+  \toprule 
+          & {\tt 2 0} & \\
+          & {\tt -3 0} & \\
+          & {\tt 0} & \\
+  \bottomrule
+  && \\
+  \multicolumn{3}{l}{LRAT Proof File} \\
+  \toprule 
+     {\tt 7}     & {\tt 2 0} & {\tt 5 6 0}\\
+     {\tt 8}     & {\tt -3 0} & {\tt 7 1 3 4 0}\\
+     {\tt 9}     & {\tt 0} &   {\tt 7 8 2 3 4 0}\\
+  \bottomrule 
+  \end{tabular}
+}
 \end{frame}
 
 
@@ -543,8 +568,8 @@ xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
 \item SAT Encoding:
   \begin{itemize}
     \item Variables: $p_{i,j}$: Pigeon $j$ in hole $i$.  $1 \leq i \leq n$, $1 \leq j \leq n+1$. 
-    \item For $1 \leq i \leq n$: ${\it AtMostOne}(p_{i,1}, p_{i,2}, \ldots, p_{i,n+1})$
     \item For $1 \leq j \leq n+1$: ${\it AtLeastOne}(p_{1,j}, p_{2,j}, \ldots, p_{n,j})$
+    \item For $1 \leq i \leq n$: ${\it AtMostOne}(p_{i,1}, p_{i,2}, \ldots, p_{i,n+1})$
   \end{itemize}
 \item PHP($n$) resolution proofs are exponential in $n$ [Haken, 1985]
 \end{itemize}
@@ -640,7 +665,7 @@ xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
 \end{frame}
 
 \begin{frame}
-  \frametitle{Can Extended Resolution Help?}
+  \frametitle{Can Extended Resolution Yield Faster SAT Solvers?}
   
   {\bf PHP Proof Complexity}
   \begin{itemize}
@@ -651,7 +676,7 @@ xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
   {\bf Use in SAT?}
   \begin{itemize}
   \item No clear way to choose which formulas to abbreviate
-
+  \item No clear way to shorten search by using abbreviations
   \end{itemize}
 
 \end{frame}
