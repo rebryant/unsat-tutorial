@@ -1,6 +1,6 @@
 # Boundary markers
 n LL -50 -25 t=e r=0
-n UR 700 425 t=e r=0
+n UR 700 475 t=e r=0
 # After conjuncting bucket C
 n T1 350 175 t=r 
 n T5 600 175 t=r
@@ -20,7 +20,13 @@ e C1 L10 t=l
 e T5 C5  t=n
 e C5 L51 t=l
 e C5 L50 t=h
+
+# Root formulas
+t T1 $c$
+t T5 $\overline{c}$
+
+
 # Show Bucket C
-n BC 475 175 t=e
+n BC 475 225 t=e
 t BC Bucket~C
-r 275 150 675 225 opt=[fill=background,rounded~corners]
+r 275 150 675 275 opt=[fill=background,rounded~corners]

@@ -1,6 +1,6 @@
 # Boundary markers
 n LL -50 -25 t=e r=0
-n UR 700 425 t=e r=0
+n UR 700 475 t=e r=0
 # After quantifying bucket A
 n T1 100 275 t=r 
 n T3 300 275 t=r
@@ -43,11 +43,19 @@ e B4 L40 t=l
 e T5 C5  t=n
 e C5 L51 t=l
 e C5 L50 t=h
+
+# Root formulas
+t T1 $b\lor{}\overline{c}$
+t T3 $\overline{b}\lor{}c$
+t T4 $b$
+t T5 $\overline{c}$
+
+
 # Show Bucket B
-n BB 275 275 t=e
+n BB 275 325 t=e
 t BB Bucket~B
-r 25 250 500 325 opt=[fill=background,rounded~corners]
+r 50 250 500 375 opt=[fill=background,rounded~corners]
 # Show Bucket C
-n BC 600 175 t=e
+n BC 600 225 t=e
 t BC Bucket~C
-r 525 150 675 225 opt=[fill=background,rounded~corners]
+r 525 150 675 275 opt=[fill=background,rounded~corners]

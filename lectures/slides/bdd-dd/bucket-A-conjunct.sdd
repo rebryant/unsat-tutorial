@@ -1,6 +1,6 @@
 # Boundary markers
 n LL -50 -25 t=e r=0
-n UR 700 425 t=e r=0
+n UR 700 475 t=e r=0
 # After conjuncting bucket A
 n T1  75 375 t=r 
 n T3 300 275 t=r
@@ -27,12 +27,12 @@ n L51 675  0 lab=$1$ t=l
 n L50 600  0 lab=$0$ t=l
 # T1 edges
 e T1 A1  t=n
-e A1 C1 t=h
-e A1 B1  t=l
+e A1 C1 t=l
+e A1 B1  t=h
 e B1 L11 t=h
 e B1 L10 t=l
-e C1 L11 t=h
-e C1 L10 t=l
+e C1 L11 t=l
+e C1 L10 t=h
 # T3 edges
 e T3 B3  t=n
 e B3 L31 t=l
@@ -47,15 +47,22 @@ e B4 L40 t=l
 e T5 C5  t=n
 e C5 L51 t=l
 e C5 L50 t=h
+
+# Root formulas
+t T1 $\textit{ITE}(a,b,\overline{c})$
+t T3 $\overline{b}\lor{}c$
+t T4 $b$
+t T5 $\overline{c}$
+
 # Show Bucket A
-n BA 75 375 t=e
+n BA 75 425 t=e
 t BA Bucket~A
-r -50 350 200 425 opt=[fill=background,rounded~corners]
+r -50 350 200 475 opt=[fill=background,rounded~corners]
 # Show Bucket B
-n BB 375 275 t=e
+n BB 375 325 t=e
 t BB Bucket~B
-r 250 250 500 325 opt=[fill=background,rounded~corners]
+r 250 250 500 375 opt=[fill=background,rounded~corners]
 # Show Bucket C
-n BC 600 175 t=e
+n BC 600 225 t=e
 t BC Bucket~C
-r 525 150 675 225 opt=[fill=background,rounded~corners]
+r 525 150 675 275 opt=[fill=background,rounded~corners]
