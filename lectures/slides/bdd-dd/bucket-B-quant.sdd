@@ -1,0 +1,26 @@
+# Boundary markers
+n LL -50 -25 t=e r=0
+n UR 700 425 t=e r=0
+# After conjuncting bucket C
+n T1 350 175 t=r 
+n T5 600 175 t=r
+# C Level
+n C1 350 100 lab=$c$
+n C5 600 100 lab=$c$
+# Leaves
+n L11 350  0 lab=$1$ t=l
+n L10 275  0 lab=$0$ t=l
+n L51 675  0 lab=$1$ t=l
+n L50 600  0 lab=$0$ t=l
+# T1 edges
+e T1 C1  t=n
+e C1 L11 t=h
+e C1 L10 t=l
+# T5 edges
+e T5 C5  t=n
+e C5 L51 t=l
+e C5 L50 t=h
+# Show Bucket C
+n BC 475 175 t=e
+t BC Bucket~C
+r 275 150 675 225 opt=[fill=background,rounded~corners]
