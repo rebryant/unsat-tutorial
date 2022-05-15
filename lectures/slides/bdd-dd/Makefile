@@ -9,7 +9,10 @@ all: bdd-build-tree-path.tex bdd-build-tree.tex bdd-build-r4.tex  bdd-build-r3.t
 	apply-argA-include.pdf apply-argB-include.pdf apply-recurse-include.pdf apply-result-include.pdf \
 	apply-recurse-step1-include.pdf apply-recurse-step2-include.pdf apply-recurse-step3-include.pdf \
 	apply-recurse-step4-include.pdf apply-recurse-step5-include.pdf \
-	eg-integer-10-include.pdf 
+	eg-integer-10-include.pdf  \
+	bucket-initial.tex bucket-A-conjunct.tex bucket-A-quant.tex \
+	bucket-B-conjunct.tex bucket-B-quant.tex \
+	bucket-C-conjunct.tex bucket-C-quant.tex \
 
 
 .SUFFIXES: .dd .idd .sdd .wdd .tex .pdf
@@ -76,6 +79,25 @@ apply-recurse-step5-include.wdd: apply-recurse-step5.sdd
 
 eg-integer-10-include.idd: eg-integer-10.dd
 	cp eg-integer-10.dd eg-integer-10-include.idd
+
+bucket-initial-proto.wdd: bucket-initial.sdd
+	cp bucket-initial.sdd bucket-initial-proto.wdd
+
+bucket-A-conjunct-proto.wdd: bucket-A-conjunct.sdd
+	cp bucket-A-conjunct.sdd bucket-A-conjunct-proto.wdd
+
+bucket-A-quant-proto.wdd: bucket-A-quant.sdd
+	cp bucket-A-quant.sdd bucket-A-quant-proto.wdd
+
+bucket-B-conjunct-proto.wdd: bucket-B-conjunct.sdd
+	cp bucket-B-conjunct.sdd bucket-B-conjunct-proto.wdd
+
+
+bucket-B-quant-proto.wdd: bucket-B-quant.sdd
+	cp bucket-B-quant.sdd bucket-B-quant-proto.wdd
+
+bucket-C-conjunct-proto.wdd: bucket-C-conjunct.sdd
+	cp bucket-C-conjunct.sdd bucket-C-conjunct-proto.wdd
 
 
 clean:

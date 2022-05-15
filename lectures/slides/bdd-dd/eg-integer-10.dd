@@ -41,7 +41,7 @@ n N9+0 200 200 t=r
 n N9+1 300 200 t=r
 n N10+0 200 100 t=r
 n N10+1 300 100 t=r
-n L1   200   0 t=l lab=$\top$
+n L1   200   0 t=l lab=$1$
 e N1+0 N2+0  t=l
 e N1+0 N2+1  t=h
 e N2+0 N3-1  t=h

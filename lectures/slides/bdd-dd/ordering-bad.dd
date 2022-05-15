@@ -13,8 +13,8 @@ n N4_4  225  300 lab=$b_1$
 n N5_1 -100   200 lab=$b_2$
 n N5_2  -25   200 lab=$b_2$
 n N6_1 -112   100 lab=$b_3$
-n L0   -125     0 t=l lab=$\bot$
-n L1    125     0 t=l lab=$\top$
+n L0   -125     0 t=l lab=$0$
+n L1    125     0 t=l lab=$1$
 e N1_1 N2_1 t=l
 e N1_1 N2_2 t=h
 e N2_1 N3_1 t=l

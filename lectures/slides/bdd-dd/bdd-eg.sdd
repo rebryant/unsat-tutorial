@@ -9,8 +9,8 @@ n B2 125 200 lab=$b$
 n B3 225 200 lab=$b$
 n C1  50 100 lab=$c$
 n C2 125 100 lab=$c$
-n L0 0     0 lab=$\bot$ t=l
-n L1 225   0 lab=$\top$ t=l
+n L0 0     0 lab=$0$ t=l
+n L1 225   0 lab=$1$ t=l
 e R1 A1
 e R2 A2
 e R3 B3

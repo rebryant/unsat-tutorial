@@ -4,8 +4,8 @@ n N1    0    400 lab=$a$
 n N2  -75    300 lab=$b$
 n N3  -25    200 lab=$c$
 n N4  -75    100 lab=$d$
-n L0  -75      0 lab=$\bot$ t=l
-n L1   75      0 lab=$\top$ t=l
+n L0  -75      0 lab=$0$ t=l
+n L1   75      0 lab=$1$ t=l
 e N1 N2 t=l
 e N1 L1 t=h
 e N2 N4 t=l

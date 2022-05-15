@@ -5,8 +5,8 @@ n N3 -25   400 lab=$a_2$
 n N4  25   300 lab=$b_2$
 n N5 -50   200 lab=$a_3$
 n N6   0   100 lab=$b_3$
-n L0 -75     0 t=l lab=$\bot$
-n L1  75     0 t=l lab=$\top$
+n L0 -75     0 t=l lab=$0$
+n L1  75     0 t=l lab=$1$
 e N1 N2 t=h
 e N1 N3 t=l
 e N2 L1 t=h

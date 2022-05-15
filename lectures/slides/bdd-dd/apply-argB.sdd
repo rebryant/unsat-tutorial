@@ -6,9 +6,9 @@ n N3   75    200 lab=$c$
 t N3 $G_5$ p=r
 n N4  -75    100 lab=$d$
 t N4 $G_2$ p=l
-n L0  -75      0 lab=$\bot$ t=l
+n L0  -75      0 lab=$0$ t=l
 t L0 $G_3$ p=l
-n L1   75      0 lab=$\top$ t=l
+n L1   75      0 lab=$1$ t=l
 t L1 $G_4$ p=r
 e N1 N4 t=l
 e N1 N3 t=h

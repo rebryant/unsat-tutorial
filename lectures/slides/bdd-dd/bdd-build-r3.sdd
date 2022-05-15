@@ -18,10 +18,10 @@ n N3_3L   65   100 t=e
 n N3_3R   85   100 t=e
 #n N3_4  225   100 lab=$x_3$
 
-n L4_3 -112      0 lab=$\bot$ t=l
+n L4_3 -112      0 lab=$0$ t=l
 n L4_3L -122     0 t=e
 n L4_3R -102     0 t=e
-n L4_6  112     0 lab=$\top$ t=l
+n L4_6  112     0 lab=$1$ t=l
 e R1 N1_1
 e N1_1 N2_1 t=l
 e N1_1 N2_2 t=h

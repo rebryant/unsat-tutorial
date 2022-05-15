@@ -12,13 +12,13 @@ t N2   $F_2,G_2$ p=l
 ## t N3_2 $F_6,G_5$ p=r
 n N4_1 -125  100 lab=$d$
 t N4_1 $F_3,G_2$ p=l
-## n N4_2   50  100 lab=$\top$ t=l
+## n N4_2   50  100 lab=$1$ t=l
 ## t N4_2 $F_5,G_2$ p=l off=0
-## n N4_3  150  100 lab=$\top$ t=l
+## n N4_3  150  100 lab=$1$ t=l
 ## t N4_3 $F_3,G_3$ p=r
-## n L0   -175    0 lab=$\bot$ t=l
+## n L0   -175    0 lab=$0$ t=l
 ## t L0   $F_4,G_3$ p=l
-## n L1    -75    0 lab=$\top$ t=l
+## n L1    -75    0 lab=$1$ t=l
 ## t L1   $F_5,G_4$ p=r
 e N1   N2     t=l
 #e N1   N3_2   t=h
