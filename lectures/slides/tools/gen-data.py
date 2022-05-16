@@ -12,6 +12,8 @@ import getopt
 # Threshold value.  Don't include data with Y values exceeding this value
 yThresh = 1000 * 1000 * 1000
 xThresh = 1000 * 1000 * 1000
+# Set any y value below yMin to yMin
+yMin = 0.0
 yColumn = -1
 optionString = ""
 
@@ -21,6 +23,7 @@ def usage(name):
     print(" -x XTHRESH Set maximum X value included")
     print(" -Y YCOL    Set column number to use as Y value")
     print(" -y YTHRESH Set maximum Y value included")
+    print(" -L YMIN    Set minimum Y value included")
     print(" -O OSTRING Specify addplot options (usually quoted string)")
 
 def trim(s):
@@ -43,7 +46,7 @@ def gen(infile, outfile):
                 pass
             try:
                 fy = float(fields[yColumn])
-                if fy < 0.0 or fy > float(yThresh):
+                if fy < yMin or fy > float(yThresh):
                     continue
             except:
                 pass
@@ -51,8 +54,8 @@ def gen(infile, outfile):
     outfile.write("};\n")
         
 def run(name, args):
-    global xThresh, yThresh, yColumn, optionString
-    optlist, args = getopt.getopt(args, "hx:y:Y:O:")
+    global xThresh, yThresh, yColumn, yMin, optionString
+    optlist, args = getopt.getopt(args, "hx:y:Y:L:O:")
     for (opt, val) in optlist:
         if opt == '-h':
             usage(name)
@@ -69,6 +72,13 @@ def run(name, args):
                 yThresh = int(val)
             except:
                 print("Desired y threshold '%s' not a number" % val)
+                usage(name)
+                return
+        elif opt == '-L':
+            try:
+                yMin = float(val)
+            except:
+                print("Desired y minimum '%s' not a number" % val)
                 usage(name)
                 return
         elif opt == '-Y':
