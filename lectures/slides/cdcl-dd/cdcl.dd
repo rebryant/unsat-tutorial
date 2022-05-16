@@ -1,0 +1,45 @@
+# Representing CDCL execution on sample formula
+# Branch points
+n r    100   400 t=r 
+n b0     0   300 t=r only=<2->
+n b1   200   300 t=r only=<3->
+n b0d1   0   200 t=r only=<2->
+n c1   100   200 t=r only=<4->
+n c0   300   200 t=r only=<5->
+n c1a0 100   100 t=r only=<4->
+n c0a0 300   100 t=r only=<5->
+n c1d1 100     0 t=r only=<4->
+n c0d0 300     0 t=r only=<5->
+# Edges
+e   r   b0   t=n only=<2->
+e   r   b1   t=l only=<3->
+e  b0 b0d1   t=l only=<2->
+e  b1   c1   t=n only=<4->
+e  b1   c0   t=l only=<5->
+e  c1 c1a0   t=l only=<4->
+e  c0 c0a0   t=l only=<5->
+e c1a0 c1d1  t=l only=<4->
+e c0a0 c0d0  t=l only=<5->
+# Tagging nodes
+n tb0  50  350  t=e  
+t tb0 $\overline{b}$ only=<2->
+n tb1  150  350  t=e
+t tb1 $b$            only=<3->
+n tc1  150  250  t=e
+t tc1 $c$            only=<4->
+n tc0  250  250  t=e
+t tc0 $\overline{c}$ only=<5->
+n tb0d1  0    250  t=e
+t tb0d1 $\overline{d}$ p=r      only=<2->
+n tc1a0  100 150 t=e
+t tc1a0 $\overline{a}$ p=r only=<4->
+n tc0a0  300 150 t=e
+t tc0a0 $\overline{a}$ p=r only=<5->
+n tc1d1 100 50 t=e
+t tc1d1 $\overline{d}$ p=r            only=<4->
+n tc0d0 300 50 t=e
+t tc0d0 $\overline{d}$ p=r only=<5->
+# Conflicts
+t b0d1  $\bot$ p=b only=<2->
+t c1d1  $\bot$ p=b only=<4->
+t c0d0  $\bot$ p=b only=<5->
