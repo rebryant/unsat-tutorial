@@ -6,13 +6,14 @@ GEN=$(PDIR)/ddgen.py
 
 all: bdd-build-tree-path.tex bdd-build-tree.tex bdd-build-r4.tex  bdd-build-r3.tex  bdd-build-r2.tex bdd-build-canonical.tex \
 	ordering-good.tex ordering-bad.tex bdd-eg.tex \
+	parity-odd.tex parity-even.tex \
 	apply-argA-include.pdf apply-argB-include.pdf apply-recurse-include.pdf apply-result-include.pdf \
 	apply-recurse-step1-include.pdf apply-recurse-step2-include.pdf apply-recurse-step3-include.pdf \
 	apply-recurse-step4-include.pdf apply-recurse-step5-include.pdf \
 	eg-integer-10-include.pdf  \
 	bucket-initial.tex bucket-A-conjunct.tex bucket-A-quant.tex \
 	bucket-B-conjunct.tex bucket-B-quant.tex \
-	bucket-C-conjunct.tex bucket-C-quant.tex \
+	bucket-C-conjunct.tex 
 
 
 .SUFFIXES: .dd .idd .sdd .wdd .tex .pdf
