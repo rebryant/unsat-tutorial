@@ -531,7 +531,7 @@ Can perform with 2 RUP steps
 \begin{itemize}
 \item Sequence of resolution steps based on linear structure of BDD
 \end{itemize}
-\item Use these to build growing set of {\em terms} $t_i$ such that $C_I \vDash t_i$
+\item Initial set of {\em validated terms} $t$ having $C_I \vDash t$
 \end{itemize}
 }
 \only<3->{
@@ -540,11 +540,11 @@ Can perform with 2 RUP steps
 \item Choose terms $t_{i}$, $t_j$.  Use to generate term $t_k$
 \item $t_k \assign{} {\sf ApplyAnd}(t_i, t_j)$
 \begin{itemize}
-\item Combine proofs $C_I \vDash t_i$, $C_I \vDash t_j$ and $t_i \land t_j \rightarrow t_k$ to get $C_I \vDash t_k$
+\item Combine proofs $C_I \vDash t_i$, $C_I \vDash t_j$ and $t_i \land t_j \rightarrow t_k$ to validate $C_I \vDash t_k$
 \end{itemize}
 \item $t_k \assign{} {\sf EQuant}(t_i, X)$
 \begin{itemize}
-\item Combine proofs $C_I \vDash t_i$ and $t_i \rightarrow t_k$ to get $C_I \vDash t_k$
+\item Combine proofs $C_I \vDash t_i$ and $t_i \rightarrow t_k$ to validate $C_I \vDash t_k$
 \end{itemize}
 \end{itemize}
 }
@@ -569,11 +569,18 @@ Can perform with 2 RUP steps
     \item Lind-Nielsen, ca.~1998
   \end{itemize}
 \item C/C++
-
 \item \hcref{https://github.com/rebryant/tbuddy-artifact}  
 \end{itemize}
 
 \bigskip
+
+{\bf Core Data Type: Trusted BDD (BDD)}
+\begin{itemize}
+\item BDD $t$
+\item Proof that $C_I \vDash t$
+\end{itemize}
+
+
 
 }
 
@@ -743,7 +750,7 @@ Can perform with 2 RUP steps
 {\bf Validate}
 \begin{itemize}    
 \item Generate proof $s \rightarrow t_j$
-\item Use to get proof $C_I \vDash t_j$
+\item Use to validate term $C_I \vDash t_j$
 \end{itemize}
 
 } %% frame
@@ -769,8 +776,7 @@ Can perform with 2 RUP steps
 {\bf Validation}
 \begin{itemize}
   \item Generate proof $s \rightarrow t_k$
-  \item Combine with proofs $C_I \vDash t_i$, $C_I \vDash t_j$, $t_i \land t_j \rightarrow s$ to get $C_I \vDash t_k$
-\item Maintains invariant $C_I \vDash t_k$
+  \item Combine with other proofs to validate $C_I \vDash t_k$
 \end{itemize}
 
 
@@ -784,7 +790,7 @@ Can perform with 2 RUP steps
           \begin{axis}[mark options={scale=0.5},grid=both, grid style={black!10}, ymode=log, ymin=0.01, ymax=600.0, xmode=log, legend style={at={(0.95,0.35)}}, legend cell align={left},
                               x post scale=1.6,
                               ytick={0.01,0.1, 1.0, 10.0, 100.0, 600.0}, yticklabels={$0.01$,$0.1$,$1.0$,$10.0$,$100.0$,$600.0$},
-                              xtick={10,100,1000,10000,100000}, xticklabels={$10$,$100$,$1{,}000$,$10{,}000$,$100{,}000$},xmin=10,xmax=100000,ymin=0,ymax=600,
+                              xtick={10,100,1000,10000,100000}, xticklabels={$10$,$100$,$1{,}000$,$10{,}000$,$100{,}000$},xmin=10,xmax=100000,
             %%                  title={Parity Benchmark Runtime}
             ]
        \input{data-formatted/chew-kissat-seconds}
@@ -907,7 +913,7 @@ Can perform with 2 RUP steps
 {\bf Proof Generation with BDDs}
 \begin{itemize}
 \item R. E. Bryant and M. J. H. Heule, ``\cref{https://www.cs.cmu.edu/~bryant/pubdir/tacas21.pdf}{Generating Extended Resolution Proofs with a BDD-Based SAT Solver},'' {\em TACAS}, 2021
-\item R. E. Bryant, A. Biere, and M. J. H. Heule, ``\cref{https://www.cs.cmu.edu/~bryant/pubdir/tacas22.pdf}{Clausal Proofs from Pseudo-Boolean Reasoning},'' {\em TACAS}, 2022
+\item R. E. Bryant, A. Biere, and M. J. H. Heule, ``\cref{https://www.cs.cmu.edu/~bryant/pubdir/tacas22-bbh.pdf}{Clausal Proofs from Pseudo-Boolean Reasoning},'' {\em TACAS}, 2022
 \item R. E. Bryant, ``TBUDDY: A Proof-Generating BDD Package,'' {\em in submission}, 2022
 \end{itemize}
 

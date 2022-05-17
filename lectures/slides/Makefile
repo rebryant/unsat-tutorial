@@ -1,5 +1,13 @@
 DGEN = ./tools/gen-data.py
-YMIN=0.011
+YMIN=0.005
+
+all: data dd pdf
+
+pdf: lecture-1a-intro.pdf  lecture-1b-proof.pdf  lecture-2a-bdd-intro.pdf  lecture-2b-bdd-proof.pdf
+
+dd:
+	pushd bdd-dd ; make ; popd
+	pushd cdcl-dd ; make ; popd
 
 
 data:
@@ -29,7 +37,17 @@ data:
 		> data-formatted/chew-tbsat-gauss-seconds.tex
 
 
+.SUFFIXES: .tex .pdf
+
+.tex.pdf:
+	pdflatex $<
+	pdflatex $<
+
 
 clean:
-	rm -f *~ *.log
+	pushd bdd-dd ; make clean ; popd
+	pushd cdcl-dd ; make clean ; popd
+	rm -f *~ *.{log,aux,nav,out,pdf,snm,toc,vrb}
 
+superclean: clean
+	rm -f *~ *.{pdf}
