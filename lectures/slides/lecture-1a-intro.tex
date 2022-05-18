@@ -236,6 +236,7 @@ Assume for {\tt int}:
 {\bf Question}
 \begin{itemize}
 \item What is the maximum $n$ for which a two-coloring exists?
+\item Answer unknown until 2016
 \end{itemize}
 }
 
@@ -497,7 +498,7 @@ Assume for {\tt int}:
     $a \land b \rightarrow c$ & $\anot \lor \bnot \lor c$ \\
     $a \rightarrow b \lor c$ & $\anot \lor b \lor c$ \\
     $(a \lor b) \rightarrow c$ & $(\anot \lor c) \land (\bnot \lor c)$ \\
-    $a \rightarrow (b \land c)$ & $(\anot \lor c) \land (\anot \lor c)$ \\
+    $a \rightarrow (b \land c)$ & $(\anot \lor b) \land (\anot \lor c)$ \\
     $\ite(a, b, c)$ & $(\anot \lor b) \land (a \lor c)$ \\
     \bottomrule
   \end{tabular}
