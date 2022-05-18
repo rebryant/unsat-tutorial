@@ -13,11 +13,6 @@ dd:
 data:
 	rm -rf data-formatted
 	mkdir data-formatted
-	# Chess
-	$(DGEN) < data-raw/chess-kissat-clauses.csv > data-formatted/chess-kissat-clauses.tex
-	$(DGEN) < data-raw/chess-tbsat-bucket-clauses.csv > data-formatted/chess-tbsat-bucket-clauses.tex
-	$(DGEN) < data-raw/chess-tbsat-linear-clauses.csv > data-formatted/chess-tbsat-linear-clauses.tex
-	$(DGEN) < data-raw/chess-tbsat-scan-clauses.csv > data-formatted/chess-tbsat-scan-clauses.tex
 	# Chew
 	$(DGEN) < data-raw/chew-kissat-clauses.csv | sed 's/addplot/addplot[only marks, color=red!50!blue, thick]/g' \
 		> data-formatted/chew-kissat-clauses.tex
