@@ -68,11 +68,6 @@
 \definecolor{bddhighcolor}{RGB}{204,0,0}
 \definecolor{bddlowcolor}{RGB}{0,143,0}
 
-
-
-\newcommand{\ft}[1]{\frametitle{#1}}
-\newcommand{\ig}[2]{\includegraphics[#1]{#2}}
-
 \definecolor{xred}{rgb}{0.77, 0.12, 0.23}
 \definecolor{xgreen}{rgb}{0.3, 0.6, 0}
 \definecolor{xblue}{rgb}{0., 0.25, 1}
@@ -434,6 +429,26 @@
     \item No further simplifications possible
   \end{itemize}
 }
+
+\frame{
+  \frametitle{BDD Representation of Unsatisfiable Formula}
+
+\vskip 50pt
+
+  \begin{center}
+    \input{bdd-dd/zero}
+  \end{center}
+
+\vskip 30pt
+
+  \begin{itemize}
+  \item Refer to this as $\bot$
+  \item Unique
+  \item Converting from CNF to BDD may require exponential number of steps
+  \end{itemize}
+
+}
+
 
 \frame{
   \frametitle{Effect of Variable Ordering}

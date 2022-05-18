@@ -1,9 +1,13 @@
 DGEN = ./tools/gen-data.py
+SUM = ./tools/summarize_slides.py
 YMIN=0.005
 
 all: data dd pdf
 
-pdf: lecture-1a-intro.pdf  lecture-1b-proof.pdf  lecture-2a-bdd-intro.pdf  lecture-2b-bdd-proof.pdf
+pdf: lecture-1a-intro.pdf  lecture-1b-proof.pdf  lecture-2a-bdd-intro.pdf  lecture-2b-bdd-proof.pdf \
+
+spdf: lecture-1a-summary.pdf lecture-1b-summary.pdf lecture-2a-summary.pdf lecture-2b-summary.pdf 
+
 
 dd:
 	pushd bdd-dd ; make ; popd
@@ -31,8 +35,20 @@ data:
 	$(DGEN) -L $(YMIN) < data-raw/chew-tbsat-gauss-seconds.csv | sed 's/addplot/addplot[color=medgreen, mark=diamond*, thick]/g' \
 		> data-formatted/chew-tbsat-gauss-seconds.tex
 
+lecture-1a-summary.tex: lecture-1a-intro.tex
+	$(SUM) lecture-1a-intro.tex > lecture-1a-summary.tex
 
-.SUFFIXES: .tex .pdf
+lecture-1b-summary.tex: lecture-1b-proof.tex
+	$(SUM) lecture-1b-proof.tex > lecture-1b-summary.tex
+
+lecture-2a-summary.tex: lecture-2a-bdd-intro.tex
+	$(SUM) lecture-2a-bdd-intro.tex > lecture-2a-summary.tex
+
+lecture-2b-summary.tex: lecture-2b-bdd-proof.tex
+	$(SUM) lecture-2b-bdd-proof.tex > lecture-2b-summary.tex
+
+
+.SUFFIXES: .tex .stex .pdf
 
 .tex.pdf:
 	pdflatex $<

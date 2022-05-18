@@ -172,7 +172,7 @@
 
 
 \begin{frame}
-  \frametitle{Extended Resolution}
+  \frametitle{Extended Resolution and BDDs}
   
 \begin{itemize}
 \item Tseitin, 1967
@@ -188,14 +188,22 @@
 \end{itemize}
 \end{itemize}
 
-\vspace{20pt}
+\medskip
 
 {\bf Extension variable $z$ becomes shorthand for formula $F$}
   \begin{itemize}
   \item Repeated use can yield exponentially smaller proof
   \end{itemize}
 
-
+  \medskip
+\only<2->{
+      {\bf Generate extension variable for every node in BDD}
+      \begin{itemize}
+        \item Biere, Sinz, Jussila, 2006
+        \item Each recursive step of Apply algorithm justified as proof steps
+        \item Reducing formula to BDD $\bot$ yields UNSAT proof
+      \end{itemize}
+}
 \end{frame}
 
 \frame{

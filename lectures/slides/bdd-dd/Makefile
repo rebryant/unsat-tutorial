@@ -5,7 +5,7 @@ PDIR = ../tools
 GEN=$(PDIR)/ddgen.py
 
 all: bdd-build-tree-path.tex bdd-build-tree.tex bdd-build-r4.tex  bdd-build-r3.tex  bdd-build-r2.tex bdd-build-canonical.tex \
-	ordering-good.tex ordering-bad.tex bdd-eg.tex \
+	ordering-good.tex ordering-bad.tex bdd-eg.tex zero.tex \
 	parity-odd.tex parity-even.tex \
 	apply-argA-include.pdf apply-argB-include.pdf apply-recurse-include.pdf apply-result-include.pdf \
 	apply-recurse-step1-include.pdf apply-recurse-step2-include.pdf apply-recurse-step3-include.pdf \
