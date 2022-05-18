@@ -2,13 +2,13 @@
 n LL -50 -25 t=e r=0
 n UR 700 475 t=e r=0
 # Initial Set of term BDDs
-n T1   0 375 t=r 
+n T1  50 375 t=r 
 n T2 150 375 t=r
 n T3 300 275 t=r
 n T4 450 275 t=r
 n T5 600 175 t=r
 # A Level
-n A1   0 300 lab=$a$
+n A1  50 300 lab=$a$
 n A2 150 300 lab=$a$
 # B Level
 n B1   0 200 lab=$b$
@@ -31,8 +31,8 @@ n L51 675  0 lab=$1$ t=l
 n L50 600  0 lab=$0$ t=l
 # T1 edges
 e T1 A1  t=n
-e A1 L11 t=h
-e A1 B1  t=l
+e A1 B1  t=h
+e A1 L11 t=l
 e B1 L11 t=h
 e B1 L10 t=l
 # T2 edges
@@ -57,16 +57,16 @@ e C5 L51 t=l
 e C5 L50 t=h
 
 # Root formulas
-t T1 $a\lor{}b$
+t T1 $\overline{a}\lor{}b$
 t T2 $a\lor{}\overline{c}$
 t T3 $\overline{b}\lor{}c$
 t T4 $b$
 t T5 $\overline{c}$
 
 # Show Bucket A
-n BA 75 425 t=e
+n BA 100 425 t=e
 t BA Bucket~A
-r -50 350 200 475 opt=[fill=background,rounded~corners]
+r  0 350 200 475 opt=[fill=background,rounded~corners]
 # Show Bucket B
 n BB 375 325 t=e
 t BB Bucket~B

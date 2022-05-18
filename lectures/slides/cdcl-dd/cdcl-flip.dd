@@ -30,15 +30,15 @@ t tc1 $c$
 n tc0  -250  -250  t=e
 t tc0 $\overline{c}$ 
 n tb0d1  0    -250  t=e
-t tb0d1 $\overline{d}$ p=r      
+t tb0d1 $\overline{d},d$ p=r      
 n tc1a0  -100 -150 t=e
 t tc1a0 $\overline{a}$ p=r 
 n tc0a0  -300 -150 t=e
 t tc0a0 $\overline{a}$ p=r 
 n tc1d1 -100 -50 t=e
-t tc1d1 $\overline{d}$ p=r            
+t tc1d1 $\overline{d},d$ p=r            
 n tc0d0 -300 -50 t=e
-t tc0d0 $\overline{d}$ p=r 
+t tc0d0 $\overline{d},d$ p=r 
 # Conflicts
 t b0d1  $\bot$ p=a
 t c1d1  $\bot$ p=a 

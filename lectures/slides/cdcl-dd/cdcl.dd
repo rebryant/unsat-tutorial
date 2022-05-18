@@ -30,15 +30,15 @@ t tc1 $c$            only=<4->
 n tc0  250  250  t=e
 t tc0 $\overline{c}$ only=<5->
 n tb0d1  0    250  t=e
-t tb0d1 $\overline{d}$ p=r      only=<2->
+t tb0d1 $\overline{d},d$ p=r      only=<2->
 n tc1a0  100 150 t=e
 t tc1a0 $\overline{a}$ p=r only=<4->
 n tc0a0  300 150 t=e
 t tc0a0 $\overline{a}$ p=r only=<5->
 n tc1d1 100 50 t=e
-t tc1d1 $\overline{d}$ p=r            only=<4->
+t tc1d1 $\overline{d},d$ p=r            only=<4->
 n tc0d0 300 50 t=e
-t tc0d0 $\overline{d}$ p=r only=<5->
+t tc0d0 $\overline{d},d$ p=r only=<5->
 # Conflicts
 t b0d1  $\bot$ p=b only=<2->
 t c1d1  $\bot$ p=b only=<4->
