@@ -13,7 +13,7 @@ all: bdd-build-tree-path.tex bdd-build-tree.tex bdd-build-r4.tex  bdd-build-r3.t
 	eg-integer-10-include.pdf  \
 	bucket-initial.tex bucket-A-conjunct.tex bucket-A-quant.tex \
 	bucket-B-conjunct.tex bucket-B-quant.tex \
-	bucket-C-conjunct.tex 
+	bucket-C-conjunct.tex \ tbdd.tex
 
 
 .SUFFIXES: .dd .idd .sdd .wdd .tex .pdf

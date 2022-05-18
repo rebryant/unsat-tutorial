@@ -1,0 +1,52 @@
+# Boundaries
+n LL -25 -75 t=e r=0
+n UR 375 400 t=e r=0
+n T1  50 375 t=r 
+n T2 150 375 t=r
+n T3 350 375 t=r only=<2->
+# A Level
+n A1  50 300 lab=$a$
+n A2 150 300 lab=$a$
+n A3 350 300 lab=$a$ only=<2->
+# B Level
+n B1   0 200 lab=$b$
+n B3 300 200 lab=$b$ only=<2->
+# C Level
+n C2 150 100 lab=$c$
+n C3 400 100 lab=$c$ only=<2->
+# Leaves
+n L11  75  0 lab=$1$ t=l
+n L10   0  0 lab=$0$ t=l
+n L21 225  0 lab=$1$ t=l
+n L20 150  0 lab=$0$ t=l
+n L31 300  0 lab=$1$ t=l only=<2->
+n L30 400  0 lab=$0$ t=l only=<2->
+# Validations
+n V1 38    -50 t=e lab=$C_1\vDash{}t_1$
+n V2 188   -50 t=e lab=$C_2\vDash{}t_2$
+n V3 350   -50 t=e lab=$C_1,C_2\vDash{}t_3$ only=<2->
+# T1 edges
+e T1 A1  t=n
+e A1 B1  t=h
+e A1 L11 t=l
+e B1 L11 t=h
+e B1 L10 t=l
+# T2 edges
+e T2 A2  t=n
+e A2 L21 t=h
+e A2 C2  t=l
+e C2 L21 t=l
+e C2 L20 t=h
+# T3 edges
+e T3 A3 t=n only=<2->
+e A3 B3 t=h only=<2->
+e A3 C3 t=l only=<2->
+e B3 L31 t=l only=<2->
+e B3 L30 t=h only=<2->
+e C3 L30 t=l only=<2->
+e C3 L31 t=h only=<2->
+# Root formulas
+t T1 $t_1$
+t T2 $t_2$
+t T3 $t_3$ only=<2->
+

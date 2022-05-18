@@ -523,6 +523,66 @@ Can perform with 2 RUP steps
 
 }
 
+\frame{
+
+  \frametitle{Trusted BDDs (TBDD)}
+
+\bigskip
+
+
+{\bf Components}
+\begin{itemize}
+\item BDD with root node $t$
+\item Proof step for unit clause $(t)$
+\end{itemize}
+
+\bigskip
+
+{\bf Interpretation}
+\begin{itemize}
+\item $C_I \vDash t$
+\item Any variable assignment that satisfies input clauses must yield $1$ for BDD with root $t$
+\end{itemize}
+
+} %% Frame
+
+\frame{
+  \frametitle{TBDD Example}
+
+  \begin{minipage}[t]{\textwidth}
+  \begin{minipage}{0.48\textwidth}
+    \centering{
+    \begin{tabular}{cl}
+%      \toprule
+      \makebox[0.5in][c]{$C_1$} & \makebox[1.0in][l]{$\anot \lor b$}  \\
+      $C_2$ & $a \lor \cnot$  \\
+      & \\
+%      \bottomrule
+    \end{tabular}
+    } % centering
+  \end{minipage}
+  \begin{minipage}{0.48\textwidth}
+    \centering{
+    \begin{tabbing}
+      $t_1 \assign {\it FromClause}(C_1)$ \\
+      $t_2 \assign {\it FromClause}(C_2)$ \\
+      \only<2->{$t_3 \assign {\it ApplyAnd}(t_1, t_2)$} \\
+    \end{tabbing}
+    } % centering
+  \end{minipage}
+  \end{minipage}
+
+\centering{
+\input{bdd-dd/tbdd}
+} % centering
+
+
+} % frame
+
+
+
+
+
 
 \frame{
 \frametitle{Structure of Overall Proof}
@@ -539,13 +599,13 @@ Can perform with 2 RUP steps
 \begin{itemize}
 \item Sequence of resolution steps based on linear structure of BDD
 \end{itemize}
-\item Initial set of {\em validated terms} $t$ having $C_I \vDash t$
+\item Initial set of TBDDs
 \end{itemize}
 }
 \only<3->{
 {\bf Combine Top-Level BDDs}
 \begin{itemize}
-\item Choose terms $t_{i}$, $t_j$.  Use to generate term $t_k$
+\item Choose TBDDs $t_{i}$, $t_j$.  Use to generate TBDD $t_k$
 \item $t_k \assign{} {\sf ApplyAnd}(t_i, t_j)$
 \begin{itemize}
 \item Combine proofs $C_I \vDash t_i$, $C_I \vDash t_j$ and $t_i \land t_j \rightarrow t_k$ to validate $C_I \vDash t_k$
@@ -613,13 +673,6 @@ Can perform with 2 RUP steps
 \end{itemize}
 
 \bigskip
-
-{\bf Core Data Type: Trusted BDD (BDD)}
-\begin{itemize}
-\item BDD $t$
-\item Proof that $C_I \vDash t$
-\end{itemize}
-
 
 
 }
