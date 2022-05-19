@@ -784,12 +784,12 @@ Can perform with 2 RUP steps
 \only<2>{
 {\bf Elimination Step}
 \begin{enumerate}
-\item Choose pivot equation $\mathbf{e}_s$ and variable $x_{t}$ such that $a_{s,t} \not = 0$
+\item Choose pivot equation $\mathbf{e}_s$ and variable $x_{t}$ such that $a_{s,t}  = 1$
 \item For each $i \not = s$:
   \begin{eqnarray*}
     \mathbf{e}_{i} & \leftarrow & \left \{ \begin{array}{ll}
       \mathbf{e}_{i} & \;a_{i,t} = 0 \\
-      \mathbf{e}_{s} + \mathbf{e}_{i}, & \;a_{i,t} \not = 0
+      \mathbf{e}_{s} + \mathbf{e}_{i}, & \;a_{i,t} = 1
       \end{array} \right .
   \end{eqnarray*}
 \begin{itemize}
