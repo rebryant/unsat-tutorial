@@ -1,0 +1,625 @@
+
+\usepackage[pdftex]{graphicx}
+
+
+\usepackage{exercise}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{booktabs}
+
+\newcommand{\pathname}[2]{\textit{ROOT}\texttt{/}\texttt{#1}\texttt{/}\texttt{#2}}
+
+\begin{document}
+\begin{center}
+{\LARGE\bf Summer School on Formal Techniques\\ [2 ex]
+\showexamname{1}}\\ [2 ex]
+June, 2022
+\end{center}
+\section*{Explanation}
+
+These exercises are designed to provide a deeper understanding of the
+operation of Boolean satisfiability (SAT) solvers, especially when
+applied to unsatisfiable formulas.  A key requirement is that solver
+be able to generate a proof of unsatisfiability in such cases.
+
+The provided problems range in how much time and effort is required,
+and whether any programming is involved.  Each problem has an
+associated {\em level}, according to the following standard:
+\begin{description}
+\item[I:] Simple pencil-and-paper exercises designed to provide a
+  concrete examples for the concepts presented.  Doing these will
+  help you gain confidence in the concepts being presented
+\item[II:] More challenging pencil-and-paper exercises, or algorithmic
+  and experimental activities.  These may running solvers on some
+  benchmarks.
+\item[III:] Deeper explorations.  These may require devising new
+  algorithms, writing code, and performing experiments that go beyond
+  the core lecture material.
+\end{description}
+
+All file names are specified in this document are given as path names
+of the form
+\pathname{\textit{DIR}}{\textit{FILE}}
+where
+\textit{ROOT} indicates the root of the directory structure,
+\textit{DIR} is either ``\texttt{files}'' or ``\texttt{generators},''
+and \textit{FILE} is the file name.
+
+
+\newpage
+
+\section*{Using the Provided Programs}
+
+Here is how to use the provided tools
+
+\subsection*{KISSAT}
+
+\begin{itemize}
+\item Running without proof generation
+\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FORMULA}\texttt{.cnf}
+\item Running with proof generation
+\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat}
+\end{itemize}
+
+\subsection*{TBSAT}
+
+\begin{itemize}
+\item Running in direct mode without proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FORMULA}\texttt{.cnf}
+\item Running in direct mode with proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FORMULA}\texttt{.cnf} \texttt{-o} {\it PROOF}\texttt{.lrat}
+\item Running in bucket mode with proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FORMULA}\texttt{.cnf} \texttt{-o} {\it PROOF}\texttt{.lrat}
+\end{itemize}
+
+
+\subsection*{DRAT-TRIM}
+
+\begin{itemize}
+\item Checking proof
+\item[]\pathname{drat-trim/build}{drat-trim} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat}
+\item Transforming a DRAT proof into an LRAT proof
+\item[]\pathname{drat-trim/build}{drat-trim} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat} \texttt{-L} {\it PROOF}\texttt{.lrat}
+\end{itemize}
+
+\subsection*{LRAT-CHECK}
+
+\begin{itemize}
+\item Checking proof
+\item[]\pathname{drat-trim/build}{lrat-check} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.lrat}
+\end{itemize}
+
+
+
+\newpage
+
+\section*{The Pigeonhole Problem PHP($n$)}
+
+
+The formula PHP($n$) encodes the impossible problem of assigning $n+1$
+pigeons to $n$ holes such that 1) each pigeon is assigned to some hole
+and 2) no hole contains more than one pigeon.  It is described in
+Slide~\#14 of Lecture 1b.  The SAT encoding uses variables $p_{i,j}$
+for $1 \leq i \leq n$ and $1 \leq j \leq n+1$, where $p_{i,j}$ is 1
+when pigeon $j$ is assigned to hole $i$.  It makes use of
+the cardinality constraints described in Slide~\#18 of Lecture 1a.
+\medskip
+
+\begin{problem}{I}
+File \pathname{files}{phpd-02.cnf} contains
+a DIMACS representation of the CNF encoding of PHP(2).
+It consists of the following lines
+\begin{lstlisting}
+p cnf 6 9
+1 4 0
+2 5 0
+3 6 0
+-1 -2 0
+-1 -3 0
+-2 -3 0
+-4 -5 0
+-4 -6 0
+-5 -6 0
+\end{lstlisting}
+
+\begin{choice}
+\item Describe how each variable $p_{i,j}$ is mapped to a variable number in the file.
+  \solution{1in}{They are in row-major
+    order.  $p_{i,j}$ is numbered $(n+1)\cdot (i-1) + j = 3 \cdot (i-1) + j$.}
+
+\item Describe how the following sets of clauses encode the problem:
+
+\ifshowsolutions
+$\;$\\[1ex]{\bf ANSWER:}
+  \begin{description}
+    \item[Clauses 1--3]: These encode the at-least-one constraints for pigeons 1--3
+    \item[Clauses 4--6]: This encodes the at-most-one constraint for hole 1
+    \item[Clauses 7--9]: This encodes the at-most-one constraint for hole 2
+  \end{description}
+\else
+  \begin{description}
+    \item[Clauses 1--3]:
+    \item[Clauses 4--6]:
+    \item[Clauses 7--9]:
+  \end{description}
+\fi
+\end{choice}
+\end{problem}
+
+\newpage
+
+\begin{problem}{II}
+In this exercise, you will determine the number of clauses in the
+encoding of PHP($n$) according to a {\em direct} encoding of the
+at-most-one constraints, as is described on Slide~\#18 of Lecture 1a.
+
+\begin{choice}
+\item How many at-least-one constraints are required?  How many clauses does each require?
+  \solution{1in}{$n+1$ constraints, each  $1$ clause}
+
+\item How many at-most-one constraints are required?  How many clauses does each require?
+  \solution{1in}{$n$ constraints, each $(n+1)\cdot n/2$ clauses}
+  
+\item What is the total number of clauses required to encode PHP($n$)?  You can write this as an expression of the form $\approx a \cdot n^b$, meaning that the exact count is an expression of the form
+  $a \cdot n^b + o(n^b)$.
+
+  \solution{1in}{$n + 1 + (n+1)\cdot n^2/2 \approx 1/2 \cdot n^3$}
+
+\end{choice}
+\end{problem}
+
+\newpage
+
+\begin{problem}{III}
+\plabel{sinz}
+
+The direct encoding of at-most-one (AMO) constraints shown on
+Slide~\#18 of Lecture 1a scales quadratically with the number of
+variables.  While polynomial, this can become unwieldy for large
+values of $n$.  Here we will consider a method to reduce the size of
+the encoding to $O(n)$ by using auxilliary variables, analogous to their
+use in encoding parity constraints, as is described on Slides~\#16--17
+of Lecture~1a.  Our goal is to derive a method described in a paper by Carsten Sinz in 2005.
+
+For $n > 2$, let us encode ${\it AMO}(x_1, x_2, \ldots, x_n)$ by the following process:
+  \begin{enumerate}
+  \item Introduce a new variable $z$
+  \item Encode some set of constraints ${\it LCON}(x_1, x_2, z)$
+  \item Recursively encode ${\it AMO}(z, x_3, \ldots, x_n)$.
+  \item The recursion terminates with a constraint of the form
+    ${\it  RCON}(z', x_n)$, where $z'$ was the final variable added.
+  \end{enumerate}
+
+\begin{choice}
+\item
+    What constraints should be encoded as ${\it LCON}$?  How would these be expressed as clauses?
+    \solution{0.5in}{$z$ should be set to 1 when either $x_1$ or $x_2$ is
+      1.
+      In addition, $x_2$ should be set to 0 when $x_1$ is one.  This leads to the following three clauses:
+      $(\overline{x}_1 \lor z)$, $(\overline{x}_2 \lor z)$, $(\overline{x}_1 \lor \overline{x}_2)$.
+      }
+
+\item
+   What constraints should be encoded as ${\it RCON}$?  How would these be expressed as clauses?   
+   \solution{0.5in}{$x_n$ should be set to 0 when $z'$ is 1.
+     This is expressed with the clause $(\overline{z}' \lor \overline{x}_n)$.}
+
+\item
+  Show the set of clauses that this process would generate for ${\it AMO}(x_1, x_2, x_3, x_4, x_5)$
+\solution{0.75in}{
+    This would require three new variables $z_2$, $z_3$, and $z_4$ and ten clauses:
+\begin{center}
+    \begin{tabular}{|c|c|c|c|}
+      \hline
+      ${\it LCON}(x_1, x_2, z_2)$ &
+      $\overline{x}_1 \lor z_2$ &  $\overline{x}_2 \lor z_2$ & $\overline{x}_1 \lor \overline{x}_2$ \\
+      \hline
+      ${\it LCON}(z_2, x_3, z_3)$ &
+      $\overline{z}_2\lor z_3$ &  $\overline{x}_3 \lor z_3$ & $\overline{z}_2 \lor \overline{x}_3$ \\
+      \hline
+      ${\it LCON}(z_2, x_4, z_4)$ &
+      $\overline{z}_3\lor z_4$ &  $\overline{x}_4 \lor z_4$ & $\overline{z}_3 \lor \overline{x}_4$ \\
+      \hline
+      ${\it RCON}(z_4, x_5)$ &
+      && $\overline{z}_4 \lor \overline{x}_5$ \\
+      \hline
+    \end{tabular}
+\end{center}
+}
+
+\item
+  For $n \geq 3$, how many additional variables and how many clauses does this encoding require?
+  \solution{0.75in}{$n-1$ variables and $3(n-2)+1$ clauses}
+    
+\item
+  How many total variables and how many total clauses would this
+  method require to encode PHP($n$)?  As before, you can write these as
+  expressions of the form $\approx a\cdot n^b$.
+  \solution{0.5in}{
+    There are still $\approx n^2$ problem variables,
+    and now there are $\approx n^2$ additional variables, for a total of $\approx 2\cdot n^2$.
+    There are $\approx n$ clauses for the ALO constraints and $\approx
+    n$ AMO constraints, each with $\approx 3\cdot n$ clauses, yielding a total of $\approx 3\cdot n^2$ clauses.
+  }
+
+\end{choice}
+\end{problem}
+
+\newpage
+
+\section*{CDCL Operation}
+
+In the following problems, you will simulate the behavior of a CDCL
+solver by hand.  Pseudocode for the algorithm is given on Slide~\#6 of
+Lecture~1b.  Rather than diagramming the execution as was done on
+Slide~\#7, you can simply write a sequence of literals describing one
+execution of inner loop of the algorithm.  Use some method (e.g.,
+colors, underlining) to distinguish literals that are set by unit
+propagation versus those assigned by choice.  A conflict occurs when
+the same variable has been assigned both 1 and 0.  Then finish the
+line with the generated conflict clause.
+
+\definecolor{xred}{rgb}{0.77, 0.12, 0.23}
+\newcommand{\rtext}[1]{\textcolor{xred}{#1}}
+
+
+For example, we would use the following notation to describe the
+execution shown on Slide\#7, where assigned literals are indicated in
+red.
+\begin{center}
+  \begin{tabular}{l|l}
+    \toprule
+    Sequence & Conflict Clause \\
+    \midrule
+    $\rtext{\overline{b}} \; \overline{d} \; d$ & $b$ \\
+    $b \; \rtext{c} \; \overline{a} \; \overline{d} \; d$ & $\overline{c}$ \\
+    $b \; \overline{c} \; \overline{a} \; \overline{d} \; d$ & $\bot$ \\
+    \bottomrule
+   \end{tabular}
+\end{center}
+
+To make the process deterministic, follow these conventions:
+\begin{enumerate}
+\item When choosing a variable and an assignment, choose the least
+  numbered unassigned variable and assign it value 1.
+\item Perform unit propagations in breadth-first order, and for each
+  of these in the order of the clauses.  That is, when processing some
+  some literal in your sequence, do a pass over the clauses, adding
+  any unit propagations to the end of your sequence.
+\end{enumerate}
+
+\newpage
+
+\begin{problem}{I}
+\plabel{php2sim}
+  Show how CDCL would execute when following these conventions on the following
+  DIMACS file, encoding PHP(2).
+
+  This file is available as \pathname{file}{phpd-02.cnf}
+\begin{lstlisting}
+p cnf 6 9
+1 4 0
+2 5 0
+3 6 0
+-1 -2 0
+-1 -3 0
+-2 -3 0
+-4 -5 0
+-4 -6 0
+-5 -6 0
+\end{lstlisting}
+  You can use the DIMACS conventions for writing literals and clauses.
+  
+\solution{1.5in}{
+\begin{center}
+  \begin{tabular}{l|l}
+    \toprule
+    Sequence & Conflict Clause \\
+    \midrule
+    \texttt{\rtext{1} -2 -3 5 6 -4 -6} & \texttt{-1 0} \\
+    \texttt{-1 4 -5 -6 2 3 -3} & \texttt{0} \\
+    \bottomrule
+    \end{tabular}
+\end{center}
+}
+\end{problem}
+
+
+\begin{problem}{I}
+\plabel{eg1sim}
+  Show how CDCL would execute when following these conventions on the following
+  DIMACS file, encoding the example formula from Lectures 2a and 2b.
+
+  This file is available as \pathname{file}{eg-1.cnf}  
+  \begin{lstlisting}
+p cnf 4 6
+-1 -2 -3    0
+-1 -2  3    0
+ 1       -4 0
+ 1        4 0
+    2    -4 0
+cd     2     4 0
+  \end{lstlisting}
+  You can use the DIMACS conventions for writing literals and clauses.
+  
+\solution{1.5in}{
+\begin{center}
+  \begin{tabular}{l|l}
+    \toprule
+    Sequence & Conflict Clause \\
+    \midrule
+    \texttt{\rtext{1} \rtext{2} -3 3} & \texttt{-1 -2 0} \\
+    \texttt{\rtext{1} -2 -4 4} & \texttt{-1 0} \\
+    \texttt{-1 -4 4} & \texttt{0} \\
+    \bottomrule
+    \end{tabular}
+\end{center}
+}
+\end{problem}
+
+\begin{problem}{II}
+\plabel{php3sim}
+  Show how CDCL would execute when following these conventions on the following
+  DIMACS file, encoding PHP(3).
+
+  This file is available as \pathname{file}{phpd-03.cnf}
+\begin{lstlisting}
+p cnf 12 22
+1 5 9 0
+2 6 10 0
+3 7 11 0
+4 8 12 0
+-1 -2 0
+-1 -3 0
+-1 -4 0
+-2 -3 0
+-2 -4 0
+-3 -4 0
+-5 -6 0
+-5 -7 0
+-5 -8 0
+-6 -7 0
+-6 -8 0
+-7 -8 0
+-9 -10 0
+-9 -11 0
+-9 -12 0
+-10 -11 0
+-10 -12 0
+-11 -12 0
+\end{lstlisting}
+  You can use the DIMACS conventions for writing literals and clauses.
+  
+\solution{1.5in}{
+\begin{center}
+  \begin{tabular}{l|l}
+    \toprule
+    Sequence & Conflict Clause \\
+    \midrule
+  \texttt{\rtext{1} -2 -3 -4 \rtext{5} -6 -7 -8 10 11 12 -11} & \texttt{-1 -5 0} \\  
+  \texttt{\rtext{1} -5 9 \rtext{6} -7 -8 11 -9} & \texttt{-1 -6 0} \\  
+  \texttt{\rtext{1} -5 -6 9 -10 10} & \texttt{-1 0} \\  
+  \texttt{-1 \rtext{2} -3 -4 \rtext{5} -6 -7 -8 11 12 -11} & \texttt{-2 -5 0} \\  
+  \texttt{-1 \rtext{2} -3 -4 -5 9 -10 -11 -12 7 8 -8} & \texttt{-2 0} \\  
+  \texttt{-1 -2 \rtext{3} -4 \rtext{5} -6 -7 -8 10 12 -12} & \texttt{-3 -5 0} \\  
+  \texttt{-1 -2 \rtext{3} -4 -5 9 -10 -11 -12 8 -7 -6 11} & \texttt{-3 0} \\  
+  \texttt{-1 -2 -3 4 \rtext{5} -6 -7 -8 10 -9 -12 11} & \texttt{-5 0} \\
+  \texttt{-1 -2 -3 4 -5 9 -10 -11 -12 6 7 8 -7} & \texttt{0} \\
+  \bottomrule
+    \end{tabular}
+\end{center}
+}
+\end{problem}
+
+\newpage
+
+\section*{CDCL Proof Generation}
+
+
+\begin{problem}{I}
+Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{php2sim}.
+Check that it is a valid proof using DRAT-TRIM.
+\end{problem}
+
+\begin{problem}{I}
+Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{eg1sim}.
+Check that it is a valid proof using DRAT-TRIM.
+\end{problem}
+
+\begin{problem}{II}
+Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{php3sim}.
+Check that it is a valid proof using DRAT-TRIM.
+\end{problem}
+
+\newpage
+
+\section*{Experimenting with PHP($n$)}
+
+In the following problems, you will explore how proofs of PHP($n$)
+scale with $n$ when running existing SAT solvers.  You will evalute
+different solvers and different encodings of the formula.
+
+The file \pathname{generators}{gen\_pigeon.py} can be used to generate
+instances of pigeonhole formulas.  Here are its command-line options:
+\begin{description}
+\item[\texttt{-h}:] Print documentation
+\item[\texttt{-v}:] Verbose mode.
+  The generator will put comments in
+  the CNF file describing how the problem is encoded.  You may find
+  these instructive.
+\item[\texttt{-L}:] Generate a linear encoding of the at-most-one
+  constraints according to the solution you devised for
+  Problem~\pref{sinz}.  {\bf WARNING:} You must first add code
+  to the generator before this will work.
+\item[\texttt{-r \textit{ROOT}}:]
+  Specify root name of output file.  For example, if you specify the
+  root ``\texttt{PHP},'' the generated file will be named
+  \texttt{PHP.cnf}.
+\item[\texttt{-n $N$}:]
+  Specify the number of holes
+\item[\texttt{-p $P$}:]
+  Specify the number of pigeons.  The default is to have $P=N+1$,
+\end{description}
+
+\begin{problem}{II}
+  Generate direct encodings of PHP($n$) and run KISSAT to fill in the
+  following table.  You can get the number of input variables and clauses from the header of the CNF file.
+To get the number of proof clause, you must run KISSAT giving the name of the proof file
+  on the command line.  The output line labeled
+  ``\texttt{proof\_added}'' shows the number of proof clauses.
+  What can you infer about how the proof size scales?
+\begin{center}
+\ifshowsolutions
+    \renewcommand{\arraystretch}{1.1}
+\else
+    \renewcommand{\arraystretch}{1.2}
+\fi
+    \begin{tabular}{rrrr}
+\toprule
+\makebox[0.75in]{$n$} & \makebox[0.75in]{Input} & \makebox[0.75in]{Input}
+& \makebox[1.5in]{Proof} \\
+\makebox[0.75in]{} & \makebox[0.75in]{Variables} & \makebox[0.75in]{Clauses}
+& \makebox[1.5in]{Clauses} \\
+\midrule
+\ifshowsolutions
+      4 & 20  & 45 & 49 \\
+      6 & 42 & 133 & 1,053 \\
+      8 & 72 & 297 & 45,691 \\
+      10 & 110 & 561 & 4,242,435 \\
+      11 & 132 & 738 & 40,030,414 \\
+\else
+      4 & & & \\
+\midrule
+      6 & &  &  \\
+\midrule
+      8 & & &  \\
+\midrule
+      10 & & & \\
+\midrule
+      11 & & &  \\
+\fi
+\bottomrule
+\end{tabular}
+\end{center}
+\end{problem}
+
+\newpage
+
+\begin{problem}{II}
+  With your direct encodings of PHP($n$), run TBSAT in both direct and bucket mode to fill in the
+  following table.
+  The output line labeled
+  ``\texttt{Total clauses}'' shows the number of proof clauses.
+  What can you infer about how the proof size scales?  How do these compare to KISSAT?  How do these compare to each other?
+\begin{center}
+\ifshowsolutions
+    \renewcommand{\arraystretch}{1.1}
+\else
+    \renewcommand{\arraystretch}{1.2}
+\fi
+    \begin{tabular}{rrrrr}
+\toprule
+\makebox[0.75in]{$n$} & \makebox[0.75in]{Input} & \makebox[0.75in]{Input}
+& \makebox[1.5in]{Direct} & \makebox[1.5in]{Bucket} \\
+\makebox[0.75in]{} & \makebox[0.75in]{Variables} & \makebox[0.75in]{Clauses}
+& \makebox[1.5in]{Clauses} & \makebox[1.5in]{Clauses} \\
+\midrule
+\ifshowsolutions
+      4 & 20  & 45 & 3,127 & 3,921 \\
+      6 & 42 & 133 & 50,714 & 64,584  \\
+      8 & 72 & 297 & 271,210 & 874,489 \\
+      10 & 110 & 561 & 5,234,007 & 9,579,967 \\
+      11 & 132 & 738 & 21,808,022 & 28,952,601 \\
+\else
+      4 & & & \\
+\midrule
+      6 & &  &  \\
+\midrule
+      8 & & &  \\
+\midrule
+      10 & & & \\
+\midrule
+      11 & & &  \\
+\fi      
+\bottomrule
+\end{tabular}
+\end{center}
+\end{problem}
+
+\begin{problem}{III}
+The file
+\pathname{generators}{cnf\_utilities.py} contains code
+to generate encodings of various formulas as clauses.
+Implement the linear at-most-one encoding scheme you devised in
+Problem~\pref{sinz}.  To do so, fill in code for the functions
+\texttt{lconEncode} and \texttt{rconEncode} in this file.
+Within these functions, call
+\texttt{writer.doClause} to generate the clauses.
+
+Test your code by the following methods:
+\begin{enumerate}
+\item
+Generate small instances of PHP with the `\texttt{-L}' and
+`\texttt{-v}' flags set.  Convince yourself that the correct clauses are listed
+\item
+  Run these with KISSAT. Make sure they're unsatisfiable.
+\item
+  Try generating instances where the number of holes and the number of
+  pigeons are the same.  These should be satisfiable.  Check the
+  solutions generated by KISSAT and make sure they're valid.
+\item
+  On the satisfiable instances, try running TBSAT in mode where it
+  generates multiple solutions (specified with the `\texttt{-m}'
+  option.  Check that these solutions are all valid.
+\end{enumerate}
+\end{problem}
+
+\newpage
+
+\begin{problem}{III}
+  Generate linear encodings of PHP($n$) and run KISSAT to fill in the
+  following table.  To do so, you must give the name of the proof file
+  on the command line.  The output line labeled
+  ``\texttt{proof\_added}'' shows the number of proof clauses.
+  How does the performance compare to the direct encoding?
+\begin{center}
+\ifshowsolutions
+    \renewcommand{\arraystretch}{1.1}
+\else
+    \renewcommand{\arraystretch}{1.2}
+\fi
+    \begin{tabular}{rrrr}
+\toprule
+\makebox[0.75in]{$n$} & \makebox[0.75in]{Input} & \makebox[0.75in]{Input}
+& \makebox[1.5in]{Proof} \\
+\makebox[0.75in]{} & \makebox[0.75in]{Variables} & \makebox[0.75in]{Clauses}
+& \makebox[1.5in]{Clauses} \\
+\midrule
+\ifshowsolutions
+      4 & 32  & 45 & 50 \\
+      6 & 72 & 103 & 342 \\
+      8 & 128 & 185 & 1,717 \\
+      10 & 200 & 291 & 11,933 \\
+      11 & 242 & 353 & 30,539 \\
+      12 & 242 & 353 & 4,108,200 \\
+\else
+      4 & & & \\
+\midrule
+      6 & &  &  \\
+\midrule
+      8 & & &  \\
+\midrule
+      10 & & & \\
+\midrule
+      11 & & &  \\
+\midrule
+      12 & & &  \\
+\fi
+\bottomrule
+\end{tabular}
+\end{center}
+\end{problem}
+
+\end{document}
+
+

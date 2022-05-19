@@ -38,25 +38,47 @@ def atMostOneDirect(writer, lits, verbose = False):
     for i in range(len(lits)):
         for j in range(i+1, len(lits)):
             writer.doClause([-lits[i], -lits[j]])
-                       
-def exactlyOneDirect(writer, lits, verbose = False):    
+
+# The following code can generate a linear representation of an at-most-one constraint.
+# You need to supply the detailed code for functions lconEncode and rconEncode
+
+# Your implementation of the left constraint LCON
+def lconEncode(writer, x1, x2, z, verbose = False):
     if verbose:
-        slist = [str(lit) for lit in lits]
-        writer.doComment("Direct encoding of exactly-one constraint for literals [%s]" % (", ".join(slist)))
-    atLeastOne(writer, lits, False)
-    atMostOne(writer, lits, False)
+        writer.doComment("Left constraint for variables [%d, %d, %d]" % (x1, x2, z))
+    ## Make calls to writer.doClause
+    # For example, calling writer.doClause([-x1, x2, z])
+    # will generate the clause with these three literals
+    ####### YOUR CODE HERE ####### 
+    writer.doClause([-x1, z])
+    writer.doClause([-x2, z])
+    writer.doClause([-x1, -x2])
+    #######  END OF YOUR CODE ####### 
+
+# Your implementation of the right constraint RCON
+def rconEncode(writer, zp, xn, verbose = False):
+    if verbose:
+        writer.doComment("Right constraint for variables [%d, %d]" % (zp,xn))
+    ## Make calls to writer.doClause
+    ####### YOUR CODE HERE ####### 
+    writer.doClause([-zp, -xn])
+    ####### END of your code ####### 
 
 
-def atMostOneSinz(writer, lits, verbose = False):
+def atMostOneLinear(writer, lits, verbose = False):
     if verbose:
         slist = [str(lit) for lit in lits]
-        writer.doComment("Sinz encoding of at-most-one constraint for literals [%s]" % (", ".join(slist)))
+        writer.doComment("Linear encoding of at-most-one constraint for literals [%s]" % (", ".join(slist)))
     if len(lits) <= 3:
         atMostOneDirect(writer, lits, False)
     else:
-        sv = writer.newVariable()
-        atMostOneDirect(writer, [lits[0], lits[1], -sv], False)
-        atMostOneSinz(writer, [sv] + lits[2:], False)
+        while len(lits) > 2:
+            l1, l2 = lits[0], lits[1]
+            z = writer.newVariable()
+            lconEncode(writer, l1, l2, z, verbose)
+            lits = [z] + lits[2:]
+        zp, xn = lits[0], lits[1]
+        rconEncode(writer, zp, xn, verbose)
 
 # Determine parity of binary representation of integer w
 def bitParity(w):

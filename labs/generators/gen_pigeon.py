@@ -24,49 +24,70 @@ import  getopt
 import writer
 import cnf_utilities
 
-# Generate CNF file for biconditional cycle
+# Generate CNF file for pigeonhole problem
 def usage(name):
-    print("Usage: %s [-h] [-v] [-s] -r ROOT -n N" % name) 
+    print("Usage: %s [-h] [-v] [-S] -r ROOT -n N [-p P]" % name) 
     print("  -h       Print this message")
     print("  -v       Run in verbose mode")
-    print("  -s       Generate satisfiable instance")
+    print("  -L       Use Linear encoding of at-most-one constraints")
     print("  -r ROOT  Specify root name for files.  Will generate ROOT.cnf")
-    print("  -n N     Specify number of variables in cycle")
+    print("  -n N     Specify number of holes")
+    print("  -p P     Specify number of pigeons (default = N+1)")
 
 verbose = False
-varCount = 8
-satisfiable = False
+holeCount = 8
+pigeonCount = None
+linear = False
+
+# Get variable encoding whether pigeon j (numbered from 1) is
+# in hole i (numbered from 1)
+
+def pij(i, j):
+    return (i-1)*pigeonCount + j
 
 def generate(froot):
     cwriter = writer.LazyCnfWriter(froot, verbose)
     if verbose:
-        ctype = "satisfiable" if satisfiable else "unsatisfiable"
-        cwriter.doComment("Encoding of %s biconditional cycle for %d variables" % (ctype, varCount))
-    vars = cwriter.newVariables(varCount)
-    cnf_utilities.biconditionalChain(cwriter, vars, verbose)
-    lastLit = vars[-1] if satisfiable else -vars[-1]
-    wrap = [vars[0], lastLit]
-    cnf_utilities.biconditionalChain(cwriter, wrap, verbose)
+        cwriter.doComment("Encoding of pigeonhole problem for %d holes and %d pigeons" % (holeCount, pigeonCount))
+        if linear:
+            cwriter.doComment("Use linear encoding of at-most-one constraints")
+        else:
+            cwriter.doComment("Use direct encoding of at-most-one constraints")
+    cwriter.newVariables(holeCount * pigeonCount)
+    # Every pigeon must be in some hole
+    for j in range(1, pigeonCount+1):
+        pvars = [pij(i, j) for i in range(1, holeCount+1)]
+        cnf_utilities.atLeastOne(cwriter, pvars, verbose)
+    # Every hole can contain at most one pigeon
+    for i in range(1, holeCount+1):
+        hvars = [pij(i, j) for j in range(1, pigeonCount+1)]
+        if linear:
+            cnf_utilities.atMostOneLinear(cwriter, hvars, verbose)
+        else:
+            cnf_utilities.atMostOneDirect(cwriter, hvars, verbose)
     cwriter.finish()
 
 def run(name, args):
-    global verbose, varCount, satisfiable
+    global verbose, holeCount, pigeonCount, linear
     froot = None
-    varCount = None
-    optlist, args = getopt.getopt(args, "hvsr:n:")
+    holeCount = None
+    pigeonCount = None
+    optlist, args = getopt.getopt(args, "hvr:n:p:L")
     for (opt, val) in optlist:
         if opt == '-h':
             usage(name)
             return
         elif opt == '-v':
             verbose = True
-        elif opt == '-s':
-            satisfiable = True
         elif opt == '-r':
             froot = val
         elif opt == '-n':
-            varCount = int(val)
-    if varCount is None:
+            holeCount = int(val)
+        elif opt == '-p':
+            pigeonCount = int(val)
+        elif opt == '-L':
+            linear = True
+    if holeCount is None:
         print("Must have value for n")
         usage(name)
         return
@@ -74,6 +95,8 @@ def run(name, args):
         print("Must have root name")
         usage(name)
         return
+    if pigeonCount is None:
+        pigeonCount = holeCount+1
     generate(froot)
 
 if __name__ == "__main__":
