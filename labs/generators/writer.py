@@ -18,7 +18,7 @@
 ########################################################################################
 
 
-# Code for generating CNF, LRAT, and DRAT files
+# Code for generating CNF, LRAT, DRAT, schedule, and order files
 class WriterException(Exception):
 
     def __init__(self, value):
@@ -198,3 +198,110 @@ class DratWriter(Writer):
         ilist = lits + [0]
         self.show(" ".join([str(i) for i in ilist]))
     
+class OrderWriter(Writer):
+    variableList = []
+
+    def __init__(self, count, froot, verbose = False, suffix = None, isNull = False):
+        if suffix is None:
+            suffix = "order"
+        Writer.__init__(self, count, froot, suffix = suffix, verbose = verbose, isNull = isNull)
+        self.variableList = []
+
+    def doOrder(self, vlist):
+        self.show(" ".join([str(c) for c in vlist]))        
+        self.variableList += vlist
+
+    def finish(self):
+        if self.isNull:
+            return
+        if self.expectedVariableCount != len(self.variableList):
+            print("Warning: Incorrect number of variables in ordering")
+            print("  Expected %d.  Got %d" % (self.expectedVariableCount, len(self.variableList)))
+
+        expected = range(1, self.expectedVariableCount+1)
+        self.variableList.sort()
+        for (e, a) in zip(expected, self.variableList):
+            if e != a:
+               raise WriterException("Mismatch in ordering.  Expected %d.  Got %d" % (e, a))
+        print("c File '%s.order' written" % (self.froot))
+        Writer.finish(self)
+
+class ScheduleWriter(Writer):
+    # Track potential errors
+    stackDepth = 0
+    decrementAnd = False
+    expectedFinal = 1
+
+    def __init__(self, count, froot, verbose = False, isNull = False):
+        Writer.__init__(self, count, froot, suffix = "schedule", verbose = verbose, isNull = isNull)
+        self.stackDepth = 0
+        self.decrementAnd = False
+    
+    def getClauses(self, clist):
+        self.show("c %s" % " ".join([str(c) for c in clist]))
+        self.stackDepth += len(clist)
+
+    # First time with new tree, want one fewer and operations
+    def newTree(self):
+        self.decrementAnd = True
+
+    def doAnd(self, count):
+        if self.decrementAnd:
+            count -= 1
+        self.decrementAnd = False
+        if count == 0:
+            return
+        if count+1 > self.stackDepth:
+            print("Warning: Cannot perform %d And's.  Only %d elements on stack" % (count, self.stackDepth))
+        self.show("a %d" % count)
+        self.stackDepth -= count
+
+    def doStore(self, name):
+        self.show("s %s" % name)
+
+    def doRetrieve(self, name):
+        self.show("r %s" % name)
+
+    def doDelete(self, name):
+        self.show("d %s" % name)
+
+    def doEquality(self):
+        self.show("e")
+
+    def doQuantify(self, vlist):
+        if self.isNull:
+            return
+        if self.stackDepth == 0:
+            print ("Warning: Cannot quantify.  Stack empty")
+#            raise WriterException("Cannot quantify.  Stack empty")
+        self.show("q %s" % " ".join([str(c) for c in vlist]))
+
+    # Issue equation or constraint.
+    def doPseudoBoolean(self, vlist, clist, const, isEquation=True):
+        if self.isNull:
+            return
+        # Anticipate that shifting everything from CNF evaluation to pseudoboolean reasoning
+        self.expectedFinal = 0
+        if self.stackDepth == 0:
+            print ("Warning: Cannot quantify.  Stack empty")
+        if len(vlist) != len(clist):
+            raise WriterException("Invalid equation or constraint.  %d variables, %d coefficients" % (len(vlist), len(clist)))
+        cmd = "=" if isEquation else ">="
+        slist = [cmd, str(const)]
+        slist += [("%d.%d" % (c,v)) for (c,v) in zip(clist, vlist)]
+        self.show(" ".join(slist))
+        self.stackDepth -= 1
+
+    def doComment(self, cstring):
+        self.show("# " + cstring)
+
+    def doInformation(self, cstring):
+        self.show("i " + cstring)
+
+    def finish(self):
+        if self.isNull:
+            return
+        if self.stackDepth != self.expectedFinal:
+            print("Warning: Invalid schedule.  Finish with %d elements on stack" % self.stackDepth)
+        Writer.finish(self)
+        
