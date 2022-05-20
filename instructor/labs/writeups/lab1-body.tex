@@ -58,20 +58,20 @@ Here is how to use the provided tools.  In the following, we assume
 
 \begin{itemize}
 \item Running without proof generation
-\item[]\pathname{kissat/build}{kissat} {\it FILE}\texttt{.cnf}
+\item[]\pathname{tools/kissat/build}{kissat} {\it FILE}\texttt{.cnf}
 \item Running with proof generation
-\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
+\item[]\pathname{tools/kissat/build}{kissat} \texttt{--no-binary} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
 \end{itemize}
 
 \subsection*{TBSAT}
 
 \begin{itemize}
 \item Running in direct mode without proof generation, and generating up to $K$ solutions
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
+\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
 \item Running in direct mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \item Running in bucket mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 
@@ -79,16 +79,16 @@ Here is how to use the provided tools.  In the following, we assume
 
 \begin{itemize}
 \item Checking proof
-\item[]\pathname{drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
+\item[]\pathname{tools/drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
 \item Transforming a DRAT proof into an LRAT proof
-\item[]\pathname{drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat} \texttt{-L} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat} \texttt{-L} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 \subsection*{LRAT-CHECK}
 
 \begin{itemize}
 \item Checking proof
-\item[]\pathname{drat-trim}{lrat-check} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/drat-trim}{lrat-check} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 
