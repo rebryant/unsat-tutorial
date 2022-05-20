@@ -50,9 +50,9 @@ def lconEncode(writer, x1, x2, z, verbose = False):
     # For example, calling writer.doClause([-x1, x2, z])
     # will generate the clause with these three literals
     ####### YOUR CODE HERE ####### 
-    writer.doClause([-x1, z])
-    writer.doClause([-x2, z])
-    writer.doClause([-x1, -x2])
+    writer.doClause([-x1, z])      ## OMIT
+    writer.doClause([-x2, z])      ## OMIT
+    writer.doClause([-x1, -x2])    ## OMIT
     #######  END OF YOUR CODE ####### 
 
 # Your implementation of the right constraint RCON
@@ -61,7 +61,7 @@ def rconEncode(writer, zp, xn, verbose = False):
         writer.doComment("Right constraint for variables [%d, %d]" % (zp,xn))
     ## Make calls to writer.doClause
     ####### YOUR CODE HERE ####### 
-    writer.doClause([-zp, -xn])
+    writer.doClause([-zp, -xn])     ## OMIT
     ####### END of your code ####### 
 
 

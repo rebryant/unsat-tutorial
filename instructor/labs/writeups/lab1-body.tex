@@ -11,7 +11,8 @@
 
 \begin{document}
 \begin{center}
-{\LARGE\bf Summer School on Formal Techniques\\ [2 ex]
+{\LARGE\bf Summer School on Formal Techniques\\ [1.5 ex]
+Boolean (Un)Satisfiability \\[2ex]
 \showexamname{1}}\\ [2 ex]
 June, 2022
 \end{center}
@@ -50,26 +51,27 @@ and \textit{FILE} is the file name.
 
 \section*{Using the Provided Programs}
 
-Here is how to use the provided tools
+Here is how to use the provided tools.  In the following, we assume
+{\it FILE} is the common base name for a set of files having different extensions.
 
 \subsection*{KISSAT}
 
 \begin{itemize}
 \item Running without proof generation
-\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FORMULA}\texttt{.cnf}
+\item[]\pathname{kissat/build}{kissat} {\it FILE}\texttt{.cnf}
 \item Running with proof generation
-\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat}
+\item[]\pathname{kissat/build}{kissat} \texttt{--no-binary} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
 \end{itemize}
 
 \subsection*{TBSAT}
 
 \begin{itemize}
-\item Running in direct mode without proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FORMULA}\texttt{.cnf}
+\item Running in direct mode without proof generation, and generating up to $K$ solutions
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
 \item Running in direct mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FORMULA}\texttt{.cnf} \texttt{-o} {\it PROOF}\texttt{.lrat}
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \item Running in bucket mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FORMULA}\texttt{.cnf} \texttt{-o} {\it PROOF}\texttt{.lrat}
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 
@@ -77,16 +79,16 @@ Here is how to use the provided tools
 
 \begin{itemize}
 \item Checking proof
-\item[]\pathname{drat-trim/build}{drat-trim} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat}
+\item[]\pathname{drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat}
 \item Transforming a DRAT proof into an LRAT proof
-\item[]\pathname{drat-trim/build}{drat-trim} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.drat} \texttt{-L} {\it PROOF}\texttt{.lrat}
+\item[]\pathname{drat-trim}{drat-trim} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.drat} \texttt{-L} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 \subsection*{LRAT-CHECK}
 
 \begin{itemize}
 \item Checking proof
-\item[]\pathname{drat-trim/build}{lrat-check} {\it FORMULA}\texttt{.cnf} {\it PROOF}\texttt{.lrat}
+\item[]\pathname{drat-trim}{lrat-check} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 
@@ -133,8 +135,8 @@ p cnf 6 9
 $\;$\\[1ex]{\bf ANSWER:}
   \begin{description}
     \item[Clauses 1--3]: These encode the at-least-one constraints for pigeons 1--3
-    \item[Clauses 4--6]: This encodes the at-most-one constraint for hole 1
-    \item[Clauses 7--9]: This encodes the at-most-one constraint for hole 2
+    \item[Clauses 4--6]: These encode the at-most-one constraint for hole 1
+    \item[Clauses 7--9]: These encode the at-most-one constraint for hole 2
   \end{description}
 \else
   \begin{description}
@@ -253,7 +255,7 @@ In the following problems, you will simulate the behavior of a CDCL
 solver by hand.  Pseudocode for the algorithm is given on Slide~\#6 of
 Lecture~1b.  Rather than diagramming the execution as was done on
 Slide~\#7, you can simply write a sequence of literals describing one
-execution of inner loop of the algorithm.  Use some method (e.g.,
+execution of the inner loop of the algorithm.  Use some method (e.g.,
 colors, underlining) to distinguish literals that are set by unit
 propagation versus those assigned by choice.  A conflict occurs when
 the same variable has been assigned both 1 and 0.  Then finish the
@@ -283,8 +285,8 @@ To make the process deterministic, follow these conventions:
 \item When choosing a variable and an assignment, choose the least
   numbered unassigned variable and assign it value 1.
 \item Perform unit propagations in breadth-first order, and for each
-  of these in the order of the clauses.  That is, when processing some
-  some literal in your sequence, do a pass over the clauses, adding
+  of these in the order of the clauses.  That is, when processing a
+  literal in the sequence, do a pass over the clauses, adding
   any unit propagations to the end of your sequence.
 \end{enumerate}
 
@@ -324,6 +326,7 @@ p cnf 6 9
 }
 \end{problem}
 
+\snewpage
 
 \begin{problem}{I}
 \plabel{eg1sim}
@@ -356,6 +359,8 @@ cd     2     4 0
 \end{center}
 }
 \end{problem}
+
+\snewpage
 
 \begin{problem}{II}
 \plabel{php3sim}
@@ -418,17 +423,36 @@ p cnf 12 22
 
 \begin{problem}{I}
 Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{php2sim}.
+\begin{choice}
+\item
 Check that it is a valid proof using DRAT-TRIM.
+\item
+Use DRAT-TRIM to generate an LRAT proof.  How do the steps in the LRAT proof correspond to those in the DRAT proof?
+{\bf Note}: You can ignore the LRAT steps that contain the character `\texttt{d}'.  These are deletion steps.
+\solution{1in}{The clauses in the LRAT proof exactly match those in the DRAT proof.  Antecedents have been added.}
+\end{choice}
 \end{problem}
 
 \begin{problem}{I}
 Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{eg1sim}.
+\begin{choice}
+\item
 Check that it is a valid proof using DRAT-TRIM.
+\item
+Use DRAT-TRIM to generate an LRAT proof.  How do the steps in the LRAT proof correspond to those in the DRAT proof?
+\solution{1in}{The clauses in the LRAT proof exactly match those in the DRAT proof.  Antecedents have been added.}
+\end{choice}
 \end{problem}
 
 \begin{problem}{II}
 Create a DRAT file containing the conflict clauses you generated in your solution to Problem~\pref{php3sim}.
+\begin{choice}
+\item
 Check that it is a valid proof using DRAT-TRIM.
+\item
+Use DRAT-TRIM to generate an LRAT proof.  How do the steps in the LRAT proof correspond to those in the DRAT proof?
+\solution{1in}{The first clause of the DRAT proof has been eliminated.  DRAT-TRIM was able to complete the unsatisfiability proof without this clause.}
+\end{choice}
 \end{problem}
 
 \newpage
@@ -463,11 +487,15 @@ instances of pigeonhole formulas.  Here are its command-line options:
 
 \begin{problem}{II}
   Generate direct encodings of PHP($n$) and run KISSAT to fill in the
-  following table.  You can get the number of input variables and clauses from the header of the CNF file.
-To get the number of proof clause, you must run KISSAT giving the name of the proof file
-  on the command line.  The output line labeled
+  following table.  Use DRAT-TRIM to check the proofs generated by KISSAT\@.
+You can get the number of input variables and clauses from the header of the CNF file.
+  The output line labeled
   ``\texttt{proof\_added}'' shows the number of proof clauses.
   What can you infer about how the proof size scales?
+\ifshowsolutions
+
+{\bf ANSWER}:
+\fi
 \begin{center}
 \ifshowsolutions
     \renewcommand{\arraystretch}{1.1}
@@ -501,16 +529,27 @@ To get the number of proof clause, you must run KISSAT giving the name of the pr
 \bottomrule
 \end{tabular}
 \end{center}
+\ifshowsolutions
+The performance scales very poorly with $n$.  Running the solver for $n=11$ took 904 seconds on our test machine.
+\fi
 \end{problem}
 
 \newpage
 
 \begin{problem}{II}
+  Although the discussion of the BDD-based solver TBSAT will be in the second set of lectures, for now it
+  be treated as a ``black box'' solver that supports two operating modes: ``direct'' and ``bucket.''
   With your direct encodings of PHP($n$), run TBSAT in both direct and bucket mode to fill in the
   following table.
+  Use LRAT-CHECK to check the proofs generated by TBSAT\@.
   The output line labeled
   ``\texttt{Total clauses}'' shows the number of proof clauses.
   What can you infer about how the proof size scales?  How do these compare to KISSAT?  How do these compare to each other?
+  How does its runtimes compare to those of KISSAT?
+\ifshowsolutions
+
+{\bf ANSWER}:
+\fi
 \begin{center}
 \ifshowsolutions
     \renewcommand{\arraystretch}{1.1}
@@ -544,7 +583,18 @@ To get the number of proof clause, you must run KISSAT giving the name of the pr
 \bottomrule
 \end{tabular}
 \end{center}
+\ifshowsolutions
+Overall, the constant factors in the proof sizes are higher than those
+of KISSAT\@.  But the scaling is better, although still exponential.
+Once $n=11$, there is a cross-over, with the TBSAT proof being smaller
+than that of KISSAT\@.  Direct evalutation is always better than
+bucket elimination on these benchmarks.  It generally runs much faster
+than KISSAT, even when the proof sizes are comparable or larger.
+Running direct mode on $n=11$ required just 41 seconds on our test machine.
+\fi
 \end{problem}
+
+\snewpage
 
 \begin{problem}{III}
 The file
@@ -568,20 +618,36 @@ Generate small instances of PHP with the `\texttt{-L}' and
   pigeons are the same.  These should be satisfiable.  Check the
   solutions generated by KISSAT and make sure they're valid.
 \item
-  On the satisfiable instances, try running TBSAT in mode where it
-  generates multiple solutions (specified with the `\texttt{-m}'
-  option.  Check that these solutions are all valid.
+  On the satisfiable instances, try running TBSAT in mode to generate multiple solutions
+  Check that these solutions are all valid.
 \end{enumerate}
+\ifshowsolutions
+{\bf ANSWER:}
+
+The following lines were added to \texttt{lconEncode}
+\begin{lstlisting}
+    writer.doClause([-x1, z])
+    writer.doClause([-x2, z])
+    writer.doClause([-x1, -x2])
+\end{lstlisting}
+The following lines were added to \texttt{rconEncode}
+\begin{lstlisting}
+    writer.doClause([-zp, -xn])
+\end{lstlisting}
+\fi
+
 \end{problem}
 
 \newpage
 
 \begin{problem}{III}
   Generate linear encodings of PHP($n$) and run KISSAT to fill in the
-  following table.  To do so, you must give the name of the proof file
-  on the command line.  The output line labeled
-  ``\texttt{proof\_added}'' shows the number of proof clauses.
+  following table.
   How does the performance compare to the direct encoding?
+\ifshowsolutions
+
+{\bf ANSWER}:
+\fi
 \begin{center}
 \ifshowsolutions
     \renewcommand{\arraystretch}{1.1}
@@ -618,6 +684,10 @@ Generate small instances of PHP with the `\texttt{-L}' and
 \bottomrule
 \end{tabular}
 \end{center}
+\ifshowsolutions
+The performance is much better.  But, we can see the exponential scaling arise once we reach $n=12$.
+\fi
+
 \end{problem}
 
 \end{document}
