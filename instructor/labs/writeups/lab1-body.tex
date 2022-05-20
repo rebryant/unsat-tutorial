@@ -43,7 +43,7 @@ of the form
 \pathname{\textit{DIR}}{\textit{FILE}}
 where
 \textit{ROOT} indicates the root of the directory structure,
-\textit{DIR} is either ``\texttt{files}'' or ``\texttt{generators},''
+\textit{DIR} is the subdirectory
 and \textit{FILE} is the file name.
 
 
@@ -67,11 +67,11 @@ Here is how to use the provided tools.  In the following, we assume
 
 \begin{itemize}
 \item Running in direct mode without proof generation, and generating up to $K$ solutions
-\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
+\item[]\pathname{tools/tbuddy/bin/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
 \item Running in direct mode with proof generation
-\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/tbuddy/bin/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \item Running in bucket mode with proof generation
-\item[]\pathname{tools/tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item[]\pathname{tools/tbuddy/bin/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
 \end{itemize}
 
 
@@ -108,7 +108,7 @@ the cardinality constraints described in Slide~\#18 of Lecture 1a.
 \medskip
 
 \begin{problem}{I}
-File \pathname{files}{phpd-02.cnf} contains
+The file \texttt{phpd-02.cnf} contains
 a DIMACS representation of the CNF encoding of PHP(2).
 It consists of the following lines
 \begin{lstlisting}
@@ -297,7 +297,7 @@ To make the process deterministic, follow these conventions:
   Show how CDCL would execute when following these conventions on the following
   DIMACS file, encoding PHP(2).
 
-  This file is available as \pathname{file}{phpd-02.cnf}
+  This file is available as \texttt{phpd-02.cnf}
 \begin{lstlisting}
 p cnf 6 9
 1 4 0
@@ -333,7 +333,7 @@ p cnf 6 9
   Show how CDCL would execute when following these conventions on the following
   DIMACS file, encoding the example formula from Lectures 2a and 2b.
 
-  This file is available as \pathname{file}{eg-1.cnf}  
+  This file is available as \texttt{eg-1.cnf}  
   \begin{lstlisting}
 p cnf 4 6
 -1 -2 -3    0
@@ -367,7 +367,7 @@ cd     2     4 0
   Show how CDCL would execute when following these conventions on the following
   DIMACS file, encoding PHP(3).
 
-  This file is available as \pathname{file}{phpd-03.cnf}
+  This file is available as \texttt{phpd-03.cnf}
 \begin{lstlisting}
 p cnf 12 22
 1 5 9 0
@@ -463,7 +463,7 @@ In the following problems, you will explore how proofs of PHP($n$)
 scale with $n$ when running existing SAT solvers.  You will evalute
 different solvers and different encodings of the formula.
 
-The file \pathname{generators}{gen\_pigeon.py} can be used to generate
+The file \texttt{gen\_pigeon.py} can be used to generate
 instances of pigeonhole formulas.  Here are its command-line options:
 \begin{description}
 \item[\texttt{-h}:] Print documentation
@@ -598,7 +598,7 @@ Running direct mode on $n=11$ required just 41 seconds on our test machine.
 
 \begin{problem}{III}
 The file
-\pathname{generators}{cnf\_utilities.py} contains code
+\texttt{cnf\_utilities.py} contains code
 to generate encodings of various formulas as clauses.
 Implement the linear at-most-one encoding scheme you devised in
 Problem~\pref{sinz}.  To do so, fill in code for the functions

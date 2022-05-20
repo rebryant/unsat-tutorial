@@ -1,0 +1,102 @@
+%% Template for exam questions
+%% REB 2/14/89
+%% REB 5/19/22.  Modified for labs
+
+\usepackage{times}
+\usepackage{fullpage}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{2ex}
+
+
+\newcounter{maxpage}
+\setcounter{maxpage}{0}
+\renewcommand{\thepage}{Page \arabic{page}}
+\samepage
+\raggedbottom
+
+\newcounter{prob}
+\newenvironment{problem}[1]{%
+\addtocounter{prob}{1}%
+{\medskip\large\bf Problem \arabic{prob}. (Level #1):}\\[1ex]}{}
+
+% Make copy of problem number
+\newcommand{\plabel}[1]{\newcounter{#1}\setcounter{#1}{\value{prob}}}
+\newcommand{\pref}[1]{\arabic{#1}}
+
+% Modify enumeration
+\newenvironment{choice}{\begin{enumerate}%
+\def\labelenumi{\Alph{enumi}.}}{\end{enumerate}}
+
+% Create vertical space of #1 inches for an answer
+\newcommand{\shortanswer}[1]{\par\vspace*{#1in}}
+
+\makeatletter
+ 
+%need an 12 pt font size for subsection and abstract headings
+\def\subsize{\@setsize\subsize{12pt}\xipt\@xipt}
+ 
+%make section titles bold and 14 point, 2 blank lines before, 1 after
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus
+ -.2ex}{2.3ex plus .2ex}{\bf}}
+ 
+%make subsection titles bold and 12 point, 1 blank line before, 1 after
+\def\subsection{\@startsection {subsection}{2}{\z@}{14pt}
+{14pt}{\subsize\bf}}
+
+%% \setlength{\textheight}{660pt}
+%% \setlength{\textwidth}{7.0in}
+%% \setlength{\topmargin}{0.0in}
+%% \setlength{\headheight}{0.0in}
+%% \setlength{\headsep}{0.0in}
+%% \setlength{\oddsidemargin}{-.19in}
+%%  
+%% \setlength{\parindent}{0em}
+%% \setlength{\parskip}{1ex}
+
+%% NOTE(kayvonf): pretty fonts
+
+%\usepackage{verbatim,amsmath,epsfig}
+%\usepackage{palatino}
+
+%% NOTE(kayvonf): pretty mono-fonts and code listing support
+
+%\usepackage[scaled]{beramono} 
+%\usepackage[T1]{fontenc}
+
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	numbers=none, 
+	escapeinside={@*}{*@},
+}
+
+\lstdefinelanguage{pseudo}{
+	morekeywords=[0]{def,for,each,for,if,break,continue,return,loop,from,to,by,in,select,from,where},
+	morecomment=[l]{\#}
+}
+
+\newcommand{\code}[1]{\text{\lstinline[basicstyle=\ttfamily]{#1}}}
+
+%% NOTE(kayvonf): Make it easy to add and remove solutions from the document
+
+\ifshowsolutions
+
+\newcommand{\solution}[2]{$\;$\\[1ex]{\bf ANSWER:}\\#2}
+
+\newcommand{\showexercisename}[1]{Practice Exercise #1 SOLUTIONS}
+\newcommand{\showexamname}[1]{Lab #1 SOLUTIONS}
+
+\else
+\newcommand{\solution}[2]{\vspace{#1}}
+\newcommand{\showexercisename}[1]{Practice Exercise #1}
+\newcommand{\showexamname}[1]{Lab #1}
+
+\fi
+
+%% Conditional page break
+\newcommand{\snewpage}{
+  \ifshowsolutions
+  \newpage
+  \fi
+  }

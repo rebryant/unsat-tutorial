@@ -5,29 +5,37 @@ Files:
 
   tools:
     A set of useful tools for supporting SAT generation and analyzing results
+    These include versions of the following programs:
 
-  kissat:
-    Code for SAT solver kissat.
-    Extracted from https://github.com/arminbiere/kissat
-    Licensing terms shown in kissat/LICENSE
+    kissat:
+      Code for SAT solver kissat.
+      Extracted from https://github.com/arminbiere/kissat
+      Licensing terms shown in tools/kissat/LICENSE
 
-  drat-trim:
-    Code for the proof checkers drat-trim and lrat-check.  Extracted from https://github.com/marijnheule/drat-trim
-    Licensing terms shown in drat-trim/LICENSE
+    drat-trim:
+      Code for the proof checkers drat-trim and lrat-check.  Extracted from https://github.com/marijnheule/drat-trim
+      Licensing terms shown in drat-trim/LICENSE
 
-  generators:
-    Code for generating CNF encodings of SAT problems
+    tbuddy
+      Code for the TBUDDY trused BDD package and the TBSAT solver
+      Extracted from https://github.com/rebryant/tbuddy-artifact
+
+  instructor:
+    Master copies of the lecture and lab material
+
+  student:
+    Material for students to use.  Populated from instructor directory
 
 Compiling the tools:
 
-Kissat should be compiled using its generated makefile:
-  cd kissat
-  ./configure
-  make
+  Kissat should be compiled using its generated makefile:
+  cd tools/kissat
+    ./configure
+    make
 
 The executable code will be written to the file kissat/build/kissat
 
-The others can be compiled using 'make install'
+The others can be compiled using 'make install' 
 
 
 Other Makefile options:

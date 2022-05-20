@@ -1,9 +1,7 @@
 clean:
-  cd benchmarks; make clean
-  cd kissat; make clean
-  cd drat-trim; make clean
-  cd tools; make clean
+  cd tools ; make clean
+  cd instructor ; make clean
 
 install:
-  cd drat-trim; make
+  cd tools ; make install
 
