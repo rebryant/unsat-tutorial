@@ -106,35 +106,27 @@ def parityDirect(writer, lits, phase, verbose = False):
             nlits.append(lits[j] * weight)
         writer.doClause(lits)
     
-def parityTree(writer, lits, phase, group = 3, verbose = False):
-    if verbose:
+def parityTree(writer, lits, phase, group = 3, verbose = False, top = True):
+    if verbose and top:
         slist = [str(lit) for lit in lits]
         ptype = "odd" if phase == 1 else "even"
         writer.doComment("Tree encoding (group size = %d) of %s parity for literals [%s]" % (group, ptype, ", ".join(slist)))
     if len(lits) <= group:
-        writer.parityDirect(writer, lits, phase, group = group, verbose = False)
+        parityDirect(writer, lits, phase, verbose = verbose)
     else:
-        xv = writer.newVariable()
-        parityDirect(writer, lits[0:group-1] + [xv], phase=0, group = group, verbose = False)
-        parityDirect(writer, lits[group-1:]  + [xv], phase=phase, group = group, verbose = False)
+        z = writer.newVariable()
+        parityDirect(writer, lits[0:group-1] + [z], phase=0, verbose = verbose)
+        parityTree(writer, lits[group-1:]  + [z], phase=phase, group = group, verbose = verbose, top = False)
 
-def parityChain(writer, lits, phase, group = 3, verbose = False):
-    if verbose:
+def parityChain(writer, lits, phase, group = 3, verbose = False, top = True):
+    if verbose and top:
         slist = [str(lit) for lit in lits]
         ptype = "odd" if phase == 1 else "even"
         writer.doComment("Chain encoding (group size = %d) of %s parity for literals [%s]" % (group, ptype, ", ".join(slist)))
     if len(lits) <= group:
-        writer.parityDirect(writer, lits, phase, group = group, verbose = False)
+        parityDirect(writer, lits, phase, verbose = verbose)
     else:
-        xv = writer.newVariable()
-        parityDirect(writer, lits[0:group-1] + [xv], phase=0, group = group, verbose = False)
-        parityDirect(writer, [xv] + lits[group-1:], phase=phase, group = group, verbose = False)        
-
-def biconditionalChain(writer, lits, verbose = False):
-    if verbose:
-        slist = [str(lit) for lit in lits]
-        writer.doComment("Create chain of biconditionals for literals [%s]" % (", ".join(slist)))
-        for i in range(len(lits)-1):
-            writer.doClause([lits[i], -lits[i+1]])
-            writer.doClause([-lits[i], lits[i+1]])
-                         
+        z = writer.newVariable()
+        parityDirect(writer, lits[0:group-1] + [z], phase=0, verbose = verbose)
+        parityChain(writer, [z] + lits[group-1:], phase=phase, group = group, verbose = verbose, top = False)
+        
