@@ -70,7 +70,9 @@ mdpx-n$(N)-m$(M)-k$(K)-s$(SEED).cnf: $(GEN)
 	$(RM) $*.lrat
 
 clean:
+	rm -f *~
 	rm -f *.cnf *.drat *.lrat *.order *.schedule
 
-
+superclean: clean
+	rm -f *data
 

@@ -6,7 +6,7 @@ N=24
 for M in {48,56,64}
 do
     K=$((M/8))
-    for S in {1..10}
+    for S in {101..110}
     do
 	make cnf N=$N M=$M K=$K SEED=$S
 	make knp N=$N M=$M K=$K SEED=$S

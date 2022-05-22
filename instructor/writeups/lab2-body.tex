@@ -7,13 +7,20 @@
 \usepackage{color}
 \usepackage{booktabs}
 \usepackage{tikz}
+\usepackage{bm}
+
+\usepackage{hyperref}
+%% Colored hyperlink 
+\newcommand{\cref}[2]{\href{#1}{\color{blue}#2}}
+%% Colored hyperlink showing link in TT font
+% \newcommand{\chref}[1]{\href{#1}{\small\tt \color{blue}#1}}
+\newcommand{\hcref}[1]{\cref{#1}{\small\tt #1}}
+
 
 \newcommand{\proofhu}[1]{${\it HU}(\texttt{#1})$}
 \newcommand{\prooflu}[1]{${\it LU}(\texttt{#1})$}
 \newcommand{\proofhd}[1]{${\it HD}(\texttt{#1})$}
 \newcommand{\proofld}[1]{${\it LD}(\texttt{#1})$}
-
-\newcommand{\pathname}[2]{\textit{ROOT}\texttt{/}\texttt{#1}\texttt{/}\texttt{#2}}
 
 \begin{document}
 \begin{center}
@@ -43,43 +50,6 @@ associated {\em level}, according to the following standard:
   algorithms, writing code, and performing experiments that go beyond
   the core lecture material.
 \end{description}
-
-All file names are specified in this document are given as path names
-of the form
-\pathname{\textit{DIR}}{\textit{FILE}}
-where
-\textit{ROOT} indicates the root of the directory structure,
-\textit{DIR} is either ``\texttt{files}'' or ``\texttt{generators},''
-and \textit{FILE} is the file name.
-
-
-\newpage
-
-\section*{Using the Provided Programs}
-
-Here is how to use the provided tools.  In the following, we assume
-{\it FILE} is the common base name for a set of files having different extensions.
-
-
-\subsection*{TBSAT}
-
-\begin{itemize}
-\item Running in direct mode without proof generation, and generating up to $K$ solutions
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
-\item Running in direct mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
-\item Running in bucket mode with proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
-\item Running with a schedule file and proof generation
-\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-s} {\it FILE}\texttt{.schedule} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
-\end{itemize}
-
-\subsection*{LRAT-CHECK}
-
-\begin{itemize}
-\item Checking proof
-\item[]\pathname{drat-trim}{lrat-check} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.lrat}
-\end{itemize}
 
 
 \newpage
@@ -117,7 +87,7 @@ p cnf 3 6
 \begin{problem}{I}
 When running TBSAT, it can be directed to operate in ``verbose'' mode, adding comments to the generated proof file.
 Here is an excerpt of the comments generated when running in direct mode on \texttt{cyc3.cnf} (See Slide~\#14 in Lecture~2a).
-The full proof is in file \texttt{cyc3-dct.lrat}.
+The full proof is in file \texttt{files/cyc3-dct.lrat}.
 \begin{lstlisting}
 c Input Clause #1: 2 1 0
 c Input Clause #2: -2 -1 0
@@ -212,7 +182,7 @@ therefore $\bot$.
 
 \begin{problem}{I}
 When running TBSAT on \texttt{cyc3.cnf} in bucket mode (see Slide~\#16--17 of Lecture 2b), the generated proof contains these comments.
-The full proof is in file \texttt{cyc3-bkt.lrat}.
+The full proof is in file \texttt{files/cyc3-bkt.lrat}.
 
 \begin{lstlisting}
 c Input Clause #1: 2 1 0
@@ -257,7 +227,7 @@ c Validate empty clause for node N0 = N21 & N22
 \newpage
 \begin{choice}
 \item Which clauses are conjuncted to form the BDD with root node \texttt{N20}?  What does this BDD represent?
-\solution{1in}{Clauses \texttt{1}, \texttt{2}, \texttt{4}, and \texttt{5}.
+\solution{1in}{Clauses \texttt{1}, \texttt{2}, \texttt{5}, and \texttt{6}.
 These are the clauses containing the top variable $a$. This BDD is a conjunction of the BDDs for Bucket A\@.}
 
 \item Draw a diagram of the BDD with root node \texttt{N20}.
@@ -279,7 +249,7 @@ Their conjunction is therefore $\bot$.}
 \section*{Proof Generation with BDDs}
 
 The following shows a portion of the LRAT proof file generated when TBSAT is applied to \texttt{cyc3.cnf}.
-The full proof is in file \texttt{cyc3-dct.lrat}.
+The full proof is in file \texttt{files/cyc3-dct.lrat}.
 \begin{lstlisting}
 c Input Clause #1: 2 1 0
 
@@ -341,7 +311,7 @@ unit \texttt{-2}, while clause \texttt{1} generates a conflict.
 
 \newpage
 The following shows a portion of the LRAT proof file generated when TBSAT is applied to \texttt{cyc3.cnf} in direct mode.
-The full proof is in file \texttt{cyc3-dct.lrat}.
+The full proof is in file \texttt{files/cyc3-dct.lrat}.
 \begin{lstlisting}
 c Input Clause #1: 2 1 0
 c Input Clause #2: -2 -1 0
@@ -429,6 +399,195 @@ This step justifies the unit clause for \texttt{N16}, showing that \texttt{N16} 
 }
 
 \end{choice}
+
+\newpage
+\section*{Minimal Disagreement Parity}
+
+\newcommand{\ints}[1]{{\cal N}_{#1}}
+\newcommand{\bset}{{\cal B}}
+
+
+For the remainder of the lab, you will test SAT solvers on a problem
+involving a combination of parity reasoning and cardinality
+constraints.
+
+Crawford, Kearns, and Shapire proposed the Minimum Disagreement Parity (MDP)
+Problem as a challenging SAT benchmark in an unpublished report from
+AT\&T Bell Laboratories in 1994.  The report is available at:
+\begin{center}
+\hcref{http://www.cs.cornell.edu/selman/docs/crawford-parity.pdf}.
+\end{center}
+
+MDP is closely related to the ``Learning Parity with Noise'' (LPN)
+problem.  LPN has been proposed as the basis for public key
+crytographic systems.  Unlike the widely used
+RSA cryptosystem, it is resistant to all known quantum
+algorithms.  The capabilities of SAT
+solvers on MDP is therefore of interest to the cryptology community.
+
+The program \texttt{generators/mdparity.py} generates CNF formulas
+encoding instances of the MDP problem.
+
+In the following, let $\bset = \{0, 1\}$ and $\ints{p} = \{1, 2, \ldots, p\}$.
+Assume all arithmetic is performed modulo 2.  Thus,
+if $a, b \in \bset$, then $a+b \equiv a \oplus b$.
+
+The problem is parameterized by a number of solution bits $n$, a
+number of samples $m$, and an error tolerance $k$, as follows.  Let
+$\bm{s} = s_1, s_2, \ldots, s_n$ be a set of {\em solution} bits.
+For $1 \leq j \leq m$, let $X_j \subseteq \ints{n}$
+be a {\em sample set}, created by generating $n$
+random bits $x_{1,j}, x_{2,j}, \ldots x_{n,j}$
+and letting $X_j = \{i | x_{i,j} = 1 \}$.  Let $\bm{y} = y_1, y_2, \ldots, y_m$ be the
+parities of the solution bits for each of the $m$ samples:
+\begin{eqnarray}
+y_j & = & \sum_{i \in X_j} s_i \label{eqn:uncorrupted}
+\end{eqnarray}
+
+Given sufficiently many samples $m$ for there to be at least $n$ linearly
+independent sample sets, the values of the solution bits $\bm{s}$ can
+be uniquely determined from $\bm{y}$ and the sample sets $S_j$ for
+$1 \leq j \leq m$ by Gaussian elimination.  To make this problem
+challenging, we introduce ``noise,'' allowing up to $k$ of these
+samples to be ``corrupted'' by flipping the values of their parity.
+That is, let $T \subseteq \ints{m}$ be created by randomly choosing
+$k$ values from $\ints{m}$ without replacement, and define $m$
+``corruption'' bits $\bm{r} = r_1, r_2, \ldots, r_m$, with $r_j$ equal
+to $1$ if $j \in T$ and equal to $0$ otherwise.  
+We then provide noisy samples $\bm{y}'$, defined as:
+\begin{eqnarray}
+y'_j & = & r_j + \sum_{i \in X_j} s_i \label{eqn:corrupted}
+\end{eqnarray}
+and require the correct solution bits $\bm{s}$ to be determined despite this noise.  That is, the generated solution $\bm{s}$ must satisfy at least $m-k$ of equations (\ref{eqn:uncorrupted}).
+For larger values of $k$, the
+problem becomes NP-hard.
+
+We can see the potential of this problem for cryptographic
+applications.  A set of $m$ parity constraints over $n$ variables serves as a ``lock'',
+where the ``key'' is a set of $n$ solution bits. 
+Checking that
+the key fits the lock requires simply checking that it satisfies at least $m-k$ of the parity constraints.
+The lock can be encoded
+with $O(m \cdot n)$ bits, and the key is just $m$ bits.
+
+This problem can readily be encoded in CNF with variables for
+unknown values $\bm{s}$ and $\bm{r}$, along with some auxilliary
+variables.  Each of the $m$ equations
+(\ref{eqn:corrupted}) is encoded using auxilliary variables to avoid
+exponential expansion.  An at-most-$k$ constraint is imposed on the
+corruption bits $\bm{r}$.
+
+Crawford and his colleagues suggests choosing $n$ to be a multiple of
+4 and letting $m = 2n$ and $k = m/8 = n/4$, but the tools they had to
+investigate these parameters didn't include today's powerful SAT
+solvers.
+
+
+\subsection*{Experiments to Perform}
+
+An instance of the problem is guaranteed to have one solution, but it
+might also have multiple solutions, possibly weakening its
+cryptographic properties.  The chances of the solution being unique
+can be improved by increasing $m$ relative to $n$, but it would be
+good to avoid taking this to an extreme.
+
+To enable checking for uniqueness, the benchmark generator has an
+option `\texttt{-x}' that causes the generator to insert a clause that
+excludes the nominal solution.  The resulting formula will then be
+unsatisfiable if there are no other solutions.
+
+The directory \texttt{mdp-run} is set up for generating instances of
+the benchmark (with the nominal solution excluded) and running both
+KISSAT and TBSAT, with and without proof generation via different
+options in the Makefile.  The key parameters to be set are $n$, $m$,
+$k$, and the random seed.  When running without proof generation, the
+Makefile also invokes a solution checker.  This program reads the
+comments in the CNF file to determine the parameters of the problem
+instance and then checks the generated SAT solution to ensure that it
+is a valid solution to the problem.  The Makefile is also configured
+to have the solvers time out if they run for more than 600 seconds.
+
+\newpage
+\begin{problem}{II}
+\plabel{prob08}
+The bash script \texttt{g08.sh} executes runs without proof generation
+for $n=8$.
+
+Try running this script.  It will produce a number of data files.  You
+can then use \texttt{grep} to check results for the runs.  Here are some useful patterns to search:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Program & Search Pattern & Result \\
+\midrule
+Either & \texttt{"SATISFIABLE"} & Whether or not the formula is satisfiable \\
+Either & \texttt{"SOLUTION VERIFIED"} & Whether the generated solution is valid \\
+\midrule
+TBSAT & \texttt{"Performing Gauss-Jordan"} & Information from Gaussian elimination phase \\
+TBSAT & \texttt{"Gauss-Jordan completed"} & Information from Gaussian elimination phase \\
+TBSAT & \texttt{"Total clauses"} & Size of the proof (if generated) \\
+TBSAT & \texttt{"Elapsed seconds"} & TBSAT runtime \\
+\midrule
+KISSAT & \texttt{"proof\_added"} & Size of the proof (if generated) \\
+KISSAT & \texttt{"process-time"} & KISSAT runtime \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Using those search terms, determine the following:
+\begin{choice}
+\item How did the number of satisfiable instances change as $m$ increased?
+\item Were all of the solutions for the satisfiable instances valid?
+\item With TBSAT, how effective was Gaussian elimination in reducing the number of parity consraints?
+\item How did the runtimes of KISSAT and TBSAT compare?
+\end{choice}
+\end{problem}
+
+\begin{problem}{II}
+The bash script \texttt{g24.sh} executes runs without proof generation
+for $n=24$.
+
+Run this script an perform the same evaluations as you did for $n=8$ in Problem~\pref{prob08}.
+\end{problem}
+
+\begin{problem}{III}
+
+Consider other experiments on the MDP problem that you can perform using the availabile tools.  Some possible parameters to explore are as follows
+\begin{center}
+\begin{tabular}{rrr}
+\toprule
+\makebox[0.75in]{$n$} &
+\makebox[0.75in]{$m$} &
+\makebox[0.75in]{$k$} \\
+\midrule
+8 & 16 & 2 \\
+8 & 24 & 3 \\
+\midrule
+16 & 32 & 4 \\
+16 & 40 & 5 \\
+16 & 48 & 6 \\
+\midrule
+24 & 48 & 6 \\
+24 & 56 & 7 \\
+24 & 64 & 8 \\
+\midrule
+32 & 64 & 8 \\
+32 & 72 & 9 \\
+32 & 80 & 10 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Some things you could evaluate include:
+\begin{choice}
+\item How does the number of satisfiable instances vary with $n$ and $m$?
+\item How do the two SAT solvers perform on these problems?
+\item For the unsatisfiable instances, how large are the proofs when proof generation is enabled?
+\item How does the runtime change for the two solvers when proof generation is enabled?
+\end{choice}
+
+\end{problem}
+
 
 \end{document}
 
