@@ -1,0 +1,435 @@
+
+\usepackage[pdftex]{graphicx}
+
+
+\usepackage{exercise}
+\usepackage{enumitem}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\newcommand{\proofhu}[1]{${\it HU}(\texttt{#1})$}
+\newcommand{\prooflu}[1]{${\it LU}(\texttt{#1})$}
+\newcommand{\proofhd}[1]{${\it HD}(\texttt{#1})$}
+\newcommand{\proofld}[1]{${\it LD}(\texttt{#1})$}
+
+\newcommand{\pathname}[2]{\textit{ROOT}\texttt{/}\texttt{#1}\texttt{/}\texttt{#2}}
+
+\begin{document}
+\begin{center}
+{\LARGE\bf Summer School on Formal Techniques\\ [1.5 ex]
+Boolean (Un)Satisfiability \\[2ex]
+\showexamname{2}}\\ [2 ex]
+June, 2022
+\end{center}
+\section*{Explanation}
+
+These exercises are designed to provide a deeper understanding of the
+operation of Boolean satisfiability (SAT) solvers, especially when
+applied to unsatisfiable formulas.  A key requirement is that solver
+be able to generate a proof of unsatisfiability in such cases.
+
+The provided problems range in how much time and effort is required,
+and whether any programming is involved.  Each problem has an
+associated {\em level}, according to the following standard:
+\begin{description}
+\item[I:] Simple pencil-and-paper exercises designed to provide a
+  concrete examples for the concepts presented.  Doing these will
+  help you gain confidence in the concepts being presented
+\item[II:] More challenging pencil-and-paper exercises, or algorithmic
+  and experimental activities.  These may running solvers on some
+  benchmarks.
+\item[III:] Deeper explorations.  These may require devising new
+  algorithms, writing code, and performing experiments that go beyond
+  the core lecture material.
+\end{description}
+
+All file names are specified in this document are given as path names
+of the form
+\pathname{\textit{DIR}}{\textit{FILE}}
+where
+\textit{ROOT} indicates the root of the directory structure,
+\textit{DIR} is either ``\texttt{files}'' or ``\texttt{generators},''
+and \textit{FILE} is the file name.
+
+
+\newpage
+
+\section*{Using the Provided Programs}
+
+Here is how to use the provided tools.  In the following, we assume
+{\it FILE} is the common base name for a set of files having different extensions.
+
+
+\subsection*{TBSAT}
+
+\begin{itemize}
+\item Running in direct mode without proof generation, and generating up to $K$ solutions
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-m} $K$
+\item Running in direct mode with proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item Running in bucket mode with proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-b} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\item Running with a schedule file and proof generation
+\item[]\pathname{tbuddy/src/tbsat}{tbsat} \texttt{-s} {\it FILE}\texttt{.schedule} \texttt{-i} {\it FILE}\texttt{.cnf} \texttt{-o} {\it FILE}\texttt{.lrat}
+\end{itemize}
+
+\subsection*{LRAT-CHECK}
+
+\begin{itemize}
+\item Checking proof
+\item[]\pathname{drat-trim}{lrat-check} {\it FILE}\texttt{.cnf} {\it FILE}\texttt{.lrat}
+\end{itemize}
+
+
+\newpage
+
+\section*{BDD-Based SAT Solving}
+
+Consider the following unsatisfiable set of parity constraints
+\begin{displaymath}
+\begin{array}{ccccccc}
+a & \oplus & b  &        &   & = & 1 \\
+  &        & b  & \oplus & c & = & 1 \\
+a & \oplus &    &        & c & = & 1 \\
+\end{array}
+\end{displaymath}
+
+We refer to this formula as ${\it CYC}(3)$, where ${\it CYC}(n)$
+represents a cyclic chain of odd parity constraints for $n$ variables.
+It's easy to see that ${\it CYC}(n)$ is unsatisfiable for odd $n$.
+
+File
+\texttt{cyc3.cnf} encodes these constraints in clausal form
+numbering variables $a$, $b$, and $c$ as 1 through 3:
+\begin{lstlisting}
+p cnf 3 6
+ 1  2 0
+-1 -2 0
+ 2  3 0
+-2 -3 0
+ 1  3 0
+-1 -3 0
+\end{lstlisting}
+
+\newpage
+
+\begin{problem}{I}
+When running TBSAT, it can be directed to operate in ``verbose'' mode, adding comments to the generated proof file.
+Here is an excerpt of the comments generated when running in direct mode on \texttt{cyc3.cnf} (See Slide~\#14 in Lecture~2a).
+The full proof is in file \texttt{cyc3-dct.lrat}.
+\begin{lstlisting}
+c Input Clause #1: 2 1 0
+c Input Clause #2: -2 -1 0
+c Input Clause #3: 3 2 0
+c Input Clause #4: -3 -2 0
+c Input Clause #5: 3 1 0
+c Input Clause #6: -3 -1 0
+c Defining clauses for node N4 = ITE(V1 (level=1), N1, N0)
+c Defining clauses for node N5 = ITE(V1 (level=1), N0, N1)
+c Defining clauses for node N6 = ITE(V2 (level=2), N1, N0)
+c Defining clauses for node N7 = ITE(V2 (level=2), N0, N1)
+c Defining clauses for node N8 = ITE(V3 (level=3), N1, N0)
+c Defining clauses for node N9 = ITE(V3 (level=3), N0, N1)
+c Defining clauses for node N10 = ITE(V1 (level=1), N1, N6)
+c Validate BDD representation of Clause #1.  Node = N10.
+c Defining clauses for node N11 = ITE(V1 (level=1), N7, N1)
+c Validate BDD representation of Clause #2.  Node = N11.
+c Defining clauses for node N12 = ITE(V2 (level=2), N1, N8)
+c Validate BDD representation of Clause #3.  Node = N12.
+c Defining clauses for node N13 = ITE(V2 (level=2), N9, N1)
+c Validate BDD representation of Clause #4.  Node = N13.
+c Defining clauses for node N14 = ITE(V1 (level=1), N1, N8)
+c Validate BDD representation of Clause #5.  Node = N14.
+c Defining clauses for node N15 = ITE(V1 (level=1), N9, N1)
+c Validate BDD representation of Clause #6.  Node = N15.
+c Defining clauses for node N16 = ITE(V1 (level=1), N7, N6)
+c Generating proof that N10 & N11 --> N16
+c Defining clauses for node N17 = ITE(V2 (level=2), N9, N8)
+c Generating proof that N12 & N13 --> N17
+c Defining clauses for node N18 = ITE(V1 (level=1), N9, N8)
+c Generating proof that N14 & N15 --> N18
+c Defining clauses for node N19 = ITE(V2 (level=2), N9, N0)
+c Generating proof that N6 & N17 --> N19
+c Defining clauses for node N20 = ITE(V2 (level=2), N0, N8)
+c Generating proof that N7 & N17 --> N20
+c Defining clauses for node N21 = ITE(V1 (level=1), N20, N19)
+c Generating proof that N16 & N17 --> N21
+c Validate empty clause for node N0 = N18 & N21
+\end{lstlisting}
+
+From these comments it is possible to trace how the program converted
+the clauses into BDDs, formed their conjunctions, and detected that
+this yielded BDD leaf $\bot$.  Understanding these steps will help you
+better understand how the program operates.
+
+Here are some guidelines on the notation:
+\begin{itemize}
+\item Nodes \texttt{N1} and \texttt{N0} denote the two leaf nodes, with values 1 and 0, respectively
+\item Nonterminal BDD nodes are given names of the form \texttt{N}$z$, where $z$ is the integer extension variable associated with the node.
+\item Nonterminal nodes are written
+as \texttt{ITE(V$x$, N$h$, N$l$)}, where $x$ indicates the variable,
+and \texttt{N}$h$ and \texttt{N}$l$ indicate the two children.
+\end{itemize}
+
+\begin{choice}
+\item
+The following nodes each correspond to conjunctions of some set of the
+input clauses.  Fill in the following table with that information, as
+is illustrated with the first entry.
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{cl}
+\toprule
+\makebox[.5in]{Node} & \makebox[1.5in]{Clauses} \\
+\midrule
+\texttt{N16} & \texttt{1}, \texttt{2} \\
+\texttt{N17} & \squick{\texttt{3}, \texttt{4}} \\
+\texttt{N18} & \squick{\texttt{5}, \texttt{6}} \\
+\texttt{N21} & \squick{\texttt{1}, \texttt{2}, \texttt{3}, \texttt{4}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\item
+Draw the BDD having node \texttt{N21} as root.
+\solution{1.5in}{\begin{center}\input{dd/n21.tex}\end{center}}
+\item
+Looking at the paths from the root to Leaf 1 in this BDD, what
+constraint do these place on the relation between  $a$ and $b$?
+\solution{1in}{The only two paths require that $a=b$.}
+\item
+What does that constraint imply when the conjunction of the BDDs with roots \texttt{N21} and \texttt{N18} is formed?
+\solution{1in}{
+The BDD with root \texttt{N18} is a representation of $a \oplus b$,
+and so it requires $a \not = b$.  Their conjunction is
+therefore $\bot$.
+}
+\end{choice}
+\end{problem}
+
+\newpage
+
+\begin{problem}{I}
+When running TBSAT on \texttt{cyc3.cnf} in bucket mode (see Slide~\#16--17 of Lecture 2b), the generated proof contains these comments.
+The full proof is in file \texttt{cyc3-bkt.lrat}.
+
+\begin{lstlisting}
+c Input Clause #1: 2 1 0
+c Input Clause #2: -2 -1 0
+c Input Clause #3: 3 2 0
+c Input Clause #4: -3 -2 0
+c Input Clause #5: 3 1 0
+c Input Clause #6: -3 -1 0
+c Defining clauses for node N4 = ITE(V1 (level=1), N1, N0)
+c Defining clauses for node N5 = ITE(V1 (level=1), N0, N1)
+c Defining clauses for node N6 = ITE(V2 (level=2), N1, N0)
+c Defining clauses for node N7 = ITE(V2 (level=2), N0, N1)
+c Defining clauses for node N8 = ITE(V3 (level=3), N1, N0)
+c Defining clauses for node N9 = ITE(V3 (level=3), N0, N1)
+c Defining clauses for node N10 = ITE(V1 (level=1), N1, N6)
+c Validate BDD representation of Clause #1.  Node = N10.
+c Defining clauses for node N11 = ITE(V1 (level=1), N7, N1)
+c Validate BDD representation of Clause #2.  Node = N11.
+c Defining clauses for node N12 = ITE(V2 (level=2), N1, N8)
+c Validate BDD representation of Clause #3.  Node = N12.
+c Defining clauses for node N13 = ITE(V2 (level=2), N9, N1)
+c Validate BDD representation of Clause #4.  Node = N13.
+c Defining clauses for node N14 = ITE(V1 (level=1), N1, N8)
+c Validate BDD representation of Clause #5.  Node = N14.
+c Defining clauses for node N15 = ITE(V1 (level=1), N9, N1)
+c Validate BDD representation of Clause #6.  Node = N15.
+c Defining clauses for node N16 = ITE(V1 (level=1), N7, N6)
+c Generating proof that N10 & N11 --> N16
+c Defining clauses for node N17 = ITE(V1 (level=1), N9, N8)
+c Generating proof that N14 & N15 --> N17
+c Defining clauses for node N18 = ITE(V2 (level=2), N8, N0)
+c Defining clauses for node N19 = ITE(V2 (level=2), N0, N9)
+c Defining clauses for node N20 = ITE(V1 (level=1), N19, N18)
+c Generating proof that N16 & N17 --> N20
+c Defining clauses for node N21 = ITE(V2 (level=2), N8, N9)
+c Generating proof that N20 --> N21
+c Defining clauses for node N22 = ITE(V2 (level=2), N9, N8)
+c Generating proof that N12 & N13 --> N22
+c Validate empty clause for node N0 = N21 & N22
+\end{lstlisting}
+
+\newpage
+\begin{choice}
+\item Which clauses are conjuncted to form the BDD with root node \texttt{N20}?  What does this BDD represent?
+\solution{1in}{Clauses \texttt{1}, \texttt{2}, \texttt{4}, and \texttt{5}.
+These are the clauses containing the top variable $a$. This BDD is a conjunction of the BDDs for Bucket A\@.}
+
+\item Draw a diagram of the BDD with root node \texttt{N20}.
+\solution{1.5in}{\begin{center}\input{dd/n20.tex}\end{center}}
+
+\item The BDD with root node \texttt{N21} is the result of existentially quantifying $a$ from \texttt{N20}, and
+the BDD with root node \texttt{N22} is the result of conjuncting clauses $C_3$ and $C_4$.  
+Draw a diagram showing both of these BDDs together.
+\solution{1.5in}{\begin{center}\input{dd/n21-22.tex}\end{center}}
+
+\item What happens when the conjunction of the BDDs with root nodes \texttt{N21} and \texttt{N22} is formed?  Explain
+\solution{1.0in}{\texttt{N21} requires $b$ and $c$ to have even parity, while \texttt{N22} requires them to have odd parity.
+Their conjunction is therefore $\bot$.}
+
+\end{choice}
+\end{problem}
+
+\newpage
+\section*{Proof Generation with BDDs}
+
+The following shows a portion of the LRAT proof file generated when TBSAT is applied to \texttt{cyc3.cnf}.
+The full proof is in file \texttt{cyc3-dct.lrat}.
+\begin{lstlisting}
+c Input Clause #1: 2 1 0
+
+c Defining clauses for node N6 = ITE(V2 (level=2), N1, N0)
+15 6 -2 0  0
+18 -6 2 0 -15 0
+
+c Defining clauses for node N10 = ITE(V1 (level=1), N1, N6)
+31 10 -1 0  0
+32 10 -6 1 0  0
+34 -10 6 1 0 -31 -32 0
+c Validate BDD representation of Clause #1.  Node = N10.
+35 10 0 31 32 15 1 0
+\end{lstlisting}
+
+\begin{problem}{I}
+As the comments indicate, clauses \texttt{15}, \texttt{18}, and \texttt{31}--\texttt{34} are defining
+clauses for two of the nodes.  With LRAT, extension variables are
+introduced via such clauses, where the literal for the extension variable is listed
+first.  Rather than the antecedents that we saw in the RUP clause
+examples of the lectures, the second portion of a defining clause
+lists any previous clauses containing the opposite literal of that of
+the extension variable, but these are also negated.  So for example,
+Clause \texttt{18} lists \texttt{-15}, while clause \texttt{34}
+lists \texttt{-31} and \texttt{-32}.  (Understanding this part of the
+syntax is not critical here.)
+
+\begin{choice}
+\item In general, there can be up to four defining clauses per BDD node, as was shown on Slide~\#4 of Lecture~2b.
+But, when a clause degenerates to a tautology, it is not included in
+the proof.
+Show how clauses \texttt{15} and \texttt{16} match up to the defining clauses for node \texttt{N6}.
+\solution{0.5in}{
+Clause \texttt{15} represents \proofhu{N6}, and
+clause \texttt{18} represents \proofld{N6}.
+Clauses \prooflu{N6} and \proofhd{N6} are tautologies.
+}
+
+\item
+Show how clauses \texttt{31}, \texttt{32}, and \texttt{34} match up to the defining clauses for node \texttt{N10}.
+\solution{0.5in}{
+Clause \texttt{31} represents \proofhu{N10},
+clause \texttt{32} represents \prooflu{N10},
+and clause \texttt{34} represents \proofld{N10}.
+Clause \proofhd{N10} is a tautology.
+}
+
+\item
+Simulate the RUP proof steps to provide a justification of
+unit clause \texttt{35}, indicating that node \texttt{N10} is the TBDD representation of input clause \texttt{1}.
+\solution{0.5in}{
+Starting with literal \texttt{-10},
+clause \texttt{31} generates unit \texttt{-1}, and \texttt{32}
+generates unit \texttt{-6}.  Clause \texttt{15} then generates
+unit \texttt{-2}, while clause \texttt{1} generates a conflict.
+}
+\end{choice}
+\end{problem}
+
+\newpage
+The following shows a portion of the LRAT proof file generated when TBSAT is applied to \texttt{cyc3.cnf} in direct mode.
+The full proof is in file \texttt{cyc3-dct.lrat}.
+\begin{lstlisting}
+c Input Clause #1: 2 1 0
+c Input Clause #2: -2 -1 0
+
+c Defining clauses for node N6 = ITE(V2 (level=2), N1, N0)
+15 6 -2 0  0
+18 -6 2 0 -15 0
+c Defining clauses for node N7 = ITE(V2 (level=2), N0, N1)
+20 7 2 0  0
+21 -7 -2 0 -20 0
+
+c Defining clauses for node N10 = ITE(V1 (level=1), N1, N6)
+31 10 -1 0  0
+32 10 -6 1 0  0
+34 -10 6 1 0 -31 -32 0
+c Validate BDD representation of Clause #1.  Node = N10.
+35 10 0 31 32 15 1 0
+
+c Defining clauses for node N11 = ITE(V1 (level=1), N7, N1)
+36 11 -7 -1 0  0
+37 11 1 0  0
+38 -11 7 -1 0 -36 -37 0
+c Validate BDD representation of Clause #2.  Node = N11.
+40 11 0 37 36 20 2 0
+
+c Defining clauses for node N16 = ITE(V1 (level=1), N7, N6)
+61 16 -7 -1 0  0
+62 16 -6 1 0  0
+63 -16 7 -1 0 -61 -62 0
+64 -16 6 1 0 -61 -62 0
+c Generating proof that N10 & N11 --> N16
+65 16 -11 -10 -1 0 61 38 0
+66 16 -11 -10 0 65 62 34 0
+
+c Validate unit clause for node N16 = N10 & N11
+67 16 0 35 40 66 0
+\end{lstlisting}
+
+\newpage
+
+\begin{choice}
+\item
+Proof clauses \texttt{65} and \texttt{66} justify that
+node \texttt{N16} is the conjunction of BDDs representing input
+clauses \texttt{1} and \texttt{2}.  It is a special case of the
+general form shown on Slide~\#7 of Lecture~2b, where the
+justifications for the two recursive calls are the tautologies
+$a \land 1 \rightarrow a$ and $\overline{a} \land 1 \rightarrow \overline{a}$.
+Match up the other clauses to those shown on Slide \#7.
+
+\solution{1in}{
+Clause \texttt{61} represents \proofhu{N16}.
+Clause \texttt{38} represents \proofhd{N11}.
+Clause \texttt{62} represents \prooflu{N16}.
+Clause \texttt{34} represents \proofld{N20}.
+}
+
+\item 
+Simulate the RUP proof steps to justify proof clauses \texttt{65} and \texttt{66}.
+
+\solution{1in}{
+The proof for clause \texttt{65} starts with literals \texttt{-16}, \texttt{11}, \texttt{10}, and \texttt{1}. Clause \texttt{61} gives \texttt{-7}.
+Clause Clause \texttt{38} gives conflict.
+
+The proof for clause \texttt{66} starts with literals \texttt{-16},
+\texttt{11}, and
+\texttt{10}.
+Clause
+\texttt{65}
+gives
+\texttt{-1}.
+Clause
+\texttt{62}
+gives
+\texttt{-6}.
+Clause
+\texttt{34}
+gives conflict.
+}
+
+\item
+What is the significance of proof clause \texttt{67}?  What is its justification?
+\solution{1in}{
+This step justifies the unit clause for \texttt{N16}, showing that \texttt{N16} is the TBDD representation for the conjunction of input clauses \texttt{1} and \texttt{2}.  It follows from 1) the unit clauses for the BDDs representing the two clauses and 2) the proof for the ApplyAnd operation on step \texttt{66}.
+}
+
+\end{choice}
+
+\end{document}
+
+

@@ -88,6 +88,11 @@ def bitParity(w):
         w = w >> 1
     return value
 
+def getBit(word,pos):
+    bit = (word>>pos) & 1
+    return bit
+
+
 
 def parityDirect(writer, lits, phase, verbose = False):
     if verbose:
@@ -102,9 +107,9 @@ def parityDirect(writer, lits, phase, verbose = False):
             continue
         nlits = []
         for j in range(n):
-            weight = 1 if ((i>>j)&0x1) == 1 else -1
+            weight = 1 if getBit(i,j) == 1 else -1
             nlits.append(lits[j] * weight)
-        writer.doClause(lits)
+        writer.doClause(nlits)
     
 def parityTree(writer, lits, phase, group = 3, verbose = False, top = True):
     if verbose and top:

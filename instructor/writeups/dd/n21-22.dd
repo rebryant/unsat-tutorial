@@ -1,0 +1,23 @@
+# Representation of Existential quantification of
+# Node N20 when TBSAT uses bucket mode on cyc3.cnf
+n B1   0 200  lab=$b$
+n B2 100 200  lab=$b$
+n C1   0 100  lab=$c$
+n C2 100 100  lab=$c$
+n L0   0   0 t=l lab=$0$
+n L1 100   0 t=l lab=$1$
+# Edges
+e B1 C1 t=l
+e B1 C2 t=h
+e B2 C1 t=l
+e B2 C2 t=h
+e C1 L0 t=l
+e C1 L1 t=h
+e C2 L1 t=l
+e C2 L0 t=h
+t B1 \texttt{N21} pos=l
+t B2 \texttt{N22} pos=r
+t C1 \texttt{N8}  pos=l
+t C2 \texttt{N9}  pos=r
+t L0 \texttt{N0}  pos=l
+t L1 \texttt{N1}  pos=r

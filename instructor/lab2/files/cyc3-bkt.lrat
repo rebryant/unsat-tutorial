@@ -1,0 +1,167 @@
+c Proof of CNF file with 3 variables and 6 clauses
+c Input Clause #1: 2 1 0
+c Input Clause #2: -2 -1 0
+c Input Clause #3: 3 2 0
+c Input Clause #4: -3 -2 0
+c Input Clause #5: 3 1 0
+c Input Clause #6: -3 -1 0
+c Deleting justifying clauses for cached operations
+c Defining clauses for node N4 = ITE(V1 (level=1), N1, N0)
+7 4 -1 0  0
+10 -4 1 0 -7 0
+c Defining clauses for node N5 = ITE(V1 (level=1), N0, N1)
+12 5 1 0  0
+13 -5 -1 0 -12 0
+c Defining clauses for node N6 = ITE(V2 (level=2), N1, N0)
+15 6 -2 0  0
+18 -6 2 0 -15 0
+c Defining clauses for node N7 = ITE(V2 (level=2), N0, N1)
+20 7 2 0  0
+21 -7 -2 0 -20 0
+c Defining clauses for node N8 = ITE(V3 (level=3), N1, N0)
+23 8 -3 0  0
+26 -8 3 0 -23 0
+c Defining clauses for node N9 = ITE(V3 (level=3), N0, N1)
+28 9 3 0  0
+29 -9 -3 0 -28 0
+c Build BDD representation of clause #1
+c Defining clauses for node N10 = ITE(V1 (level=1), N1, N6)
+31 10 -1 0  0
+32 10 -6 1 0  0
+34 -10 6 1 0 -31 -32 0
+c Validate BDD representation of Clause #1.  Node = N10.
+35 10 0 31 32 15 1 0
+c Build BDD representation of clause #2
+c Defining clauses for node N11 = ITE(V1 (level=1), N7, N1)
+36 11 -7 -1 0  0
+37 11 1 0  0
+38 -11 7 -1 0 -36 -37 0
+c Validate BDD representation of Clause #2.  Node = N11.
+40 11 0 37 36 20 2 0
+c Build BDD representation of clause #3
+c Defining clauses for node N12 = ITE(V2 (level=2), N1, N8)
+41 12 -2 0  0
+42 12 -8 2 0  0
+44 -12 8 2 0 -41 -42 0
+c Validate BDD representation of Clause #3.  Node = N12.
+45 12 0 41 42 23 3 0
+c Build BDD representation of clause #4
+c Defining clauses for node N13 = ITE(V2 (level=2), N9, N1)
+46 13 -9 -2 0  0
+47 13 2 0  0
+48 -13 9 -2 0 -46 -47 0
+c Validate BDD representation of Clause #4.  Node = N13.
+50 13 0 47 46 28 4 0
+c Build BDD representation of clause #5
+c Defining clauses for node N14 = ITE(V1 (level=1), N1, N8)
+51 14 -1 0  0
+52 14 -8 1 0  0
+54 -14 8 1 0 -51 -52 0
+c Validate BDD representation of Clause #5.  Node = N14.
+55 14 0 51 52 23 5 0
+c Build BDD representation of clause #6
+c Defining clauses for node N15 = ITE(V1 (level=1), N9, N1)
+56 15 -9 -1 0  0
+57 15 1 0  0
+58 -15 9 -1 0 -56 -57 0
+c Validate BDD representation of Clause #6.  Node = N15.
+60 15 0 57 56 28 6 0
+c Defining clauses for node N16 = ITE(V1 (level=1), N7, N6)
+61 16 -7 -1 0  0
+62 16 -6 1 0  0
+63 -16 7 -1 0 -61 -62 0
+64 -16 6 1 0 -61 -62 0
+c Generating proof that N10 & N11 --> N16
+65 16 -11 -10 -1 0 61 38 0
+66 16 -11 -10 0 65 62 34 0
+66 d 65 0
+c Validate unit clause for node N16 = N10 & N11
+67 16 0 35 40 66 0
+c Deleting unit clause #40 for node N11
+67 d 40 0
+c Deleting unit clause #35 for node N10
+67 d 35 0
+c Defining clauses for node N17 = ITE(V1 (level=1), N9, N8)
+68 17 -9 -1 0  0
+69 17 -8 1 0  0
+70 -17 9 -1 0 -68 -69 0
+71 -17 8 1 0 -68 -69 0
+c Generating proof that N14 & N15 --> N17
+72 17 -15 -14 -1 0 68 58 0
+73 17 -15 -14 0 72 69 54 0
+73 d 72 0
+c Validate unit clause for node N17 = N14 & N15
+74 17 0 55 60 73 0
+c Deleting unit clause #60 for node N15
+74 d 60 0
+c Deleting unit clause #55 for node N14
+74 d 55 0
+c Defining clauses for node N18 = ITE(V2 (level=2), N8, N0)
+75 18 -8 -2 0  0
+77 -18 8 -2 0 -75 0
+78 -18 2 0 -75 0
+c Generating proof that N6 & N8 --> N18
+79 18 -8 -6 0 75 18 0
+c Defining clauses for node N19 = ITE(V2 (level=2), N0, N9)
+81 19 -9 2 0  0
+82 -19 -2 0 -81 0
+83 -19 9 2 0 -81 0
+c Generating proof that N7 & N9 --> N19
+84 19 -9 -7 0 21 81 0
+c Defining clauses for node N20 = ITE(V1 (level=1), N19, N18)
+85 20 -19 -1 0  0
+86 20 -18 1 0  0
+87 -20 19 -1 0 -85 -86 0
+88 -20 18 1 0 -85 -86 0
+c Generating proof that N16 & N17 --> N20
+89 20 -17 -16 -1 0 85 63 70 84 0
+90 20 -17 -16 0 89 86 64 71 79 0
+90 d 89 0
+c Validate unit clause for node N20 = N16 & N17
+91 20 0 67 74 90 0
+c Deleting unit clause #74 for node N17
+91 d 74 0
+c Deleting unit clause #67 for node N16
+91 d 67 0
+c Defining clauses for node N21 = ITE(V2 (level=2), N8, N9)
+92 21 -8 -2 0  0
+93 21 -9 2 0  0
+94 -21 8 -2 0 -92 -93 0
+95 -21 9 2 0 -92 -93 0
+c Generating proof that N18 --> N21
+96 21 -18 0 78 92 77 0
+c Generating proof that N19 --> N21
+97 21 -19 0 82 93 83 0
+c Generating proof that N20 --> N21
+98 21 -20 -1 0 87 97 0
+99 21 -20 0 98 88 96 0
+99 d 98 0
+c Validation of unit clause for N21 by implication from N20
+100 21 0 99 91 0
+c Deleting unit clause #91 for node N20
+100 d 91 0
+c Defining clauses for node N22 = ITE(V2 (level=2), N9, N8)
+101 22 -9 -2 0  0
+102 22 -8 2 0  0
+103 -22 9 -2 0 -101 -102 0
+104 -22 8 2 0 -101 -102 0
+c Generating proof that N12 & N13 --> N22
+105 22 -13 -12 -2 0 101 48 0
+106 22 -13 -12 0 105 102 44 0
+106 d 105 0
+c Validate unit clause for node N22 = N12 & N13
+107 22 0 45 50 106 0
+c Deleting unit clause #50 for node N13
+107 d 50 0
+c Deleting unit clause #45 for node N12
+107 d 45 0
+c Generating proof that N9 & N8 --> N0
+108 -9 -8 0 29 26 0
+c Generating proof that N8 & N9 --> N0
+109 -9 -8 0 29 26 0
+c Generating proof that N21 & N22 --> N0
+110 -22 -21 -2 0 94 103 109 0
+111 -22 -21 0 110 95 104 108 0
+111 d 110 0
+c Validate empty clause for node N0 = N21 & N22
+112  0 100 107 111 0
