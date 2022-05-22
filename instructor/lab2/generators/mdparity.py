@@ -85,7 +85,7 @@ rngPhaseInit, rngPhaseCounting, rngPhaseSelection, rngPhaseBits, rngPhaseSamples
 
 def initRng(seed):
     global rng
-    rng = RNG(rngPhaseCount)
+    rng = RNG(seed=seed, seedCount=rngPhaseCount)
 
 
 # The following random number generator isn't especially good, but it
@@ -414,6 +414,9 @@ def run(name, args):
             seed = int(val)
         elif opt == '-X':
             maxArgs = int(val)
+
+
+
     if numVariables is None:
         print("Must specify number of variables with -n option")
         return
@@ -424,6 +427,7 @@ def run(name, args):
     if numDownSamples > numSamples:
         print("Invalid number of downsamples.  Must be <= number of samples")
         return
+
     initRng(seed)
 
     if numCorrupt is None:
