@@ -1,6 +1,9 @@
 
-pdf: lab1.pdf lab1-solution.pdf lab2.pdf lab2-solution.pdf
 
+pdf: dodd lab1.pdf lab1-solution.pdf lab2.pdf lab2-solution.pdf
+
+dodd:
+	(pushd dd ; make ; popd)
 
 lab1.pdf: lab1.tex lab1-body.tex exercise.sty
 	pdflatex lab1
