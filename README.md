@@ -26,17 +26,8 @@ Files:
   student:
     Material for students to use.  Populated from instructor directory
 
-Compiling the tools:
-
-  Kissat should be compiled using its generated makefile:
-  cd tools/kissat
-    ./configure
-    make
-
-The executable code will be written to the file kissat/build/kissat
-
-The others can be compiled using 'make install' 
-
+Compiling the tools and setting up student directory structure:
+    make install
 
 Other Makefile options:
 
