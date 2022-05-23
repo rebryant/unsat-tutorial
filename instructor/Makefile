@@ -9,5 +9,5 @@ setup:
 	mkdir $(DEST)
 	mkdir $(LECDEST)
 	cp -p $(LECFILES) $(LECDEST)	
-	(cd lab1; make dist)
-	(cd lab2; make dist)
+	(cd lab1; make setup)
+	(cd lab2; make setup)
