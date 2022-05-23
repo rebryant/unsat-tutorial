@@ -482,6 +482,26 @@ Crawford and his colleagues suggests choosing $n$ to be a multiple of
 investigate these parameters didn't include today's powerful SAT
 solvers.
 
+From the perspective of SAT solving, MDP has an interesting form.
+Structurally, it consists of a set of $m$ parity constraints over a
+set of $n+m$ variables---the $n$ solution bits $\bm{s}$, plus the $m$
+corruption bits $\bm{r}$, with each constraint $j$ having the form
+shown in (\ref{eqn:corrupted}).  Additionally, there is an at-most-$k$
+constraint imposed on the corruption bits.  Performing Gaussian
+elimination on the parity constraints reduces them to a smaller set of
+constraints over just the corruption bits.  The problem to be solved
+then becomes: ``Given a set of parity constraints over $m$ variables,
+is there a solution for which at most $k$ of these variables are set
+to 1?''  That is not a problem that can be solved by algebraic
+methods.
+
+Thus, Gaussian elimination can greatly simplify the constraints, but
+unlike other parity constraint benchmarks (e.g., the Chew-Heule
+formulas), it must be combined with other SAT solving techniques.
+KISSAT does not do anything special with parity constraints---it will
+apply CDCL to the original problem.  TBSAT, on the other hand, can be
+directed to first apply Gaussian elimination and then perform bucket
+elimination.
 
 \subsection*{Experiments to Perform}
 
@@ -507,7 +527,6 @@ instance and then checks the generated SAT solution to ensure that it
 is a valid solution to the problem.  The Makefile is also configured
 to have the solvers time out if they run for more than 600 seconds.
 
-\newpage
 \begin{problem}{II}
 \plabel{prob08}
 The bash script \texttt{g08.sh} executes runs without proof generation
@@ -527,6 +546,7 @@ TBSAT & \texttt{"Performing Gauss-Jordan"} & Information from Gaussian eliminati
 TBSAT & \texttt{"Gauss-Jordan completed"} & Information from Gaussian elimination phase \\
 TBSAT & \texttt{"Total clauses"} & Size of the proof (if generated) \\
 TBSAT & \texttt{"Elapsed seconds"} & TBSAT runtime \\
+TBSAT & \texttt{"Timeout"} & Program timed out \\
 \midrule
 KISSAT & \texttt{"proof\_added"} & Size of the proof (if generated) \\
 KISSAT & \texttt{"process-time"} & KISSAT runtime \\
@@ -542,6 +562,8 @@ Using those search terms, determine the following:
 \item How did the runtimes of KISSAT and TBSAT compare?
 \end{choice}
 \end{problem}
+
+\newpage
 
 \begin{problem}{II}
 The bash script \texttt{g24.sh} executes runs without proof generation
