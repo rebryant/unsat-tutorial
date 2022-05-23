@@ -1,7 +1,9 @@
 DTARGET = ../../student
 WDIR = ../writeups
 
-dist2:
+tar: lab2.tar
+
+lab2.tar:
 	rm -rf lab2
 	# Create replica of student subdirectory	
 	mkdir lab2
@@ -17,7 +19,10 @@ dist2:
 	cp -p $(WDIR)/lab2-solution.pdf lab2
 	# Tar and copy it to student directory tree
 	tar cf lab2.tar lab2
+	rm -rf lab2
+
+
+dist: lab2.tar
 	rm -rf $(DTARGET)/lab2
 	cp lab2.tar $(DTARGET)
-	(pushd $(DTARGET); tar xf lab2.tar ; rm lab2.tar ; popd)
-	rm -rf lab2 lab2.tar
+	(cd $(DTARGET); tar xf lab2.tar ; rm lab2.tar)
