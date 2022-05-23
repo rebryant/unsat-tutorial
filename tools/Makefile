@@ -1,12 +1,7 @@
 install:
 	cd drat-trim ; make
 	cd tbuddy ; make install
-	echo "Note: KISSAT not installed"
-	echo "You should do the following:"
-	echo "   cd kissat"
-	echo "   ./configure"
-	echo "   make"
-
+	cd kissat ; ./configure ; make
 
 clean:
 	cd drat-trim ; make clean
