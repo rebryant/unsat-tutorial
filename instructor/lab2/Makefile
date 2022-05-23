@@ -5,12 +5,14 @@ dist2:
 	rm -rf lab2
 	# Create replica of student subdirectory	
 	mkdir lab2
-	mkdir lab2/files lab2/generators
+	mkdir lab2/files lab2/generators lab2/mdp-run
 	cp -p README.txt lab2
 	cp -p files/*.{cnf,lrat} lab2/files
 	cp -p generators/mdparity.py lab2/generators
 	cp -p generators/mdpcheck.py lab2/generators
 	cp -p generators/writer.py lab2/generators
+	cp -p mdp-run/Makefile lab2/mdp-run
+	cp -p mdp-run/{g08,g24}.sh lab2/mdp-run
 	cp -p $(WDIR)/lab2.pdf lab2
 	cp -p $(WDIR)/lab2-solution.pdf lab2
 	# Tar and copy it to student directory tree

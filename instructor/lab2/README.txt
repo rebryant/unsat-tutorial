@@ -13,3 +13,5 @@ Files:
 
 	generators/writer.py: Support code for the generator.  You need not modify this file
 
+	mdp-run/Makefile, mdp-run/{g08,g24}.sh: Framework for running experiments with KISSAT and TBSAT
+	             on different instances of the MDP problem
