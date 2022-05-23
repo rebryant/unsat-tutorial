@@ -26,13 +26,14 @@ Exploring the ability of Boolean satisfiability solvers to produce a proofs of u
   - student:
     Material for students to use.  Populated from instructor directory
 
-## Compiling the tools and setting up student directory structure:
-    make install
+## Make options
 
-## Other Makefile options:
+ - Compiling the tools and setting up student directory structure:
+    'make install'
 
-  - clean:
-    Clean generated stuff from directories
+ - Reverting back to original files
+    'make clean'
 
-## Links to useful documents
+
+## Lab materials
   - [Obtaining Lectures and Labs](instructor/writeups/downloading.pdf)
