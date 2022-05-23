@@ -5,8 +5,7 @@ FILTER = 'OMIT'
 tar: lab1.tar
 
 setup: lab1.tar
-	rm -rf $(DTARGET)
-	mkdir $(DTARGET)
+	rm -rf $(DTARGET)/lab1
 	cp lab1.tar $(DTARGET)
 	(cd $(DTARGET); tar xf lab1.tar ; rm lab1.tar)
 	rm -f lab1.tar
