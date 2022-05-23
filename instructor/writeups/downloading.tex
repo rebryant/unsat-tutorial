@@ -54,9 +54,9 @@ Labs:
 You must have the {\tt git} progam installed on your machine.
 
 \begin{code}
-git clone https://github.com/rebryant/unsat-tutorial
-cd unsat-tutorial
-make install
+    git clone https://github.com/rebryant/unsat-tutorial
+    cd unsat-tutorial
+    make install
 \end{code}
 
 \subsection*{Via Dockerhub}
@@ -64,10 +64,10 @@ make install
 You must have the {\tt docker} program installed on your machine.
 
 \begin{code}
-  docker pull randalbryant/ssft22
-  docker run -it randalbryant/ssft22 bash
-  login ssft22 \textit{(Password = ssft22)}
-  cd unsat-tutorial
+    docker pull randalbryant/ssft22
+    docker run -it randalbryant/ssft22 bash
+    login ssft22 \textit{(Password = ssft22)}
+    cd unsat-tutorial
 \end{code}
 
 \subsection*{Saving your Docker Container}
@@ -76,7 +76,7 @@ You must have the {\tt docker} program installed on your machine.
 The above \texttt{docker run} command creates and runs a {\em
   container} based on the specified Docker {\em image}.  If you exit the shell
 on your docker container,\footnote{Actually, you need to exit twice---once from your user login and once from the shell.}
-any changes you have made to any files
+any changes you have made to files
 would normally be lost.  Instead you must \texttt{commit} your
 container, but you can't commit back to the version on Dockerhub.
 
@@ -103,7 +103,7 @@ You now exit the container shell.
 
 \item You can later pick up where you left off at by executing
 \begin{code}
-docker container commit 16640d5ce162 ssft22_local
+docker run -it ssft22_local bash
 \end{code}
 and login again.
 \end{enumerate}
