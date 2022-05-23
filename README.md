@@ -30,11 +30,11 @@ Exploring the ability of Boolean satisfiability solvers to produce a proofs of u
 
  - Compiling the tools and setting up student directory structure:
 
-    'make install'
+    `make install`
 
  - Reverting back to original files
 
-    'make clean'
+    `make clean`
 
 
 ## Lab materials
