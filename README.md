@@ -9,12 +9,12 @@ Exploring the ability of Boolean satisfiability solvers to produce a proofs of u
 
     - kissat:
       Code for SAT solver kissat.
-      Extracted from https://github.com/arminbiere/kissat
-      Licensing terms shown in tools/kissat/LICENSE
+      Extracted from https://github.com/arminbiere/kissat.
+      Licensing terms shown in tools/kissat/LICENSE.
 
     - drat-trim:
-      Code for the proof checkers drat-trim and lrat-check.  Extracted from https://github.com/marijnheule/drat-trim
-      Licensing terms shown in drat-trim/LICENSE
+      Code for the proof checkers drat-trim and lrat-check.  Extracted from https://github.com/marijnheule/drat-trim.
+      Licensing terms shown in drat-trim/LICENSE.
 
     - tbuddy
       Code for the TBUDDY trused BDD package and the TBSAT solver
@@ -29,9 +29,11 @@ Exploring the ability of Boolean satisfiability solvers to produce a proofs of u
 ## Make options
 
  - Compiling the tools and setting up student directory structure:
+
     'make install'
 
  - Reverting back to original files
+
     'make clean'
 
 
