@@ -1,0 +1,111 @@
+\documentclass[12pt]{article}
+
+\usepackage{times}
+\usepackage{fullpage}
+\usepackage{alltt}
+\newenvironment{code}{\begin{alltt}\small}{\end{alltt}}
+
+\usepackage{color}
+\usepackage{hyperref}
+%% Colored hyperlink 
+\newcommand{\cref}[2]{\href{#1}{\color{blue}#2}}
+%% Colored hyperlink showing link in TT font
+% \newcommand{\chref}[1]{\href{#1}{\small\tt \color{blue}#1}}
+\newcommand{\hcref}[1]{\cref{#1}{\small\tt #1}}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bf Summer School on Formal Techniques\\ [1.5 ex]
+Boolean (Un)Satisfiability \\[2ex]
+Obtaining Class Materials}\\ [2 ex]
+June, 2022
+\end{center}
+
+The labs consist of three C/C++ programs, several Python programs, PDF
+documents, and some data files.
+
+\section*{Available Material}
+
+Lectures:
+\begin{itemize}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/slides/lecture-1a-intro.pdf}{Lecture 1A: (Un)Satisfiability}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/slides/lecture-1b-proof.pdf}{Lecture 1b: Unsatisfiability Proofs}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/slides/lecture-2a-bdd-intro.pdf}{Lecture 2a: Introduction to BDDs}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/slides/lecture-2b-bdd-proof.pdf}{Lecture 2a: Proof Generation with BDDs}
+\end{itemize}  
+
+Labs:
+\begin{itemize}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/writeups/downloading.pdf}{Obtaining Lab Materials}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/writeups/lab1.pdf}{Lab 1}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/writeups/lab2.pdf}{Lab 2}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/writeups/lab1-solution.pdf}{Lab 1 Solution}
+\item \cref{https://github.com/rebryant/unsat-tutorial/blob/main/instructor/writeups/lab2-solution.pdf}{Lab 2 Solution}
+\end{itemize}
+  
+
+\newpage
+
+\section*{Setting up Labs}
+
+\subsection*{Via Github}
+
+You must have the {\tt git} progam installed on your machine.
+
+\begin{code}
+git clone https://github.com/rebryant/unsat-tutorial
+cd unsat-tutorial
+make install
+\end{code}
+
+\subsection*{Via Dockerhub}
+
+You must have the {\tt docker} program installed on your machine.
+
+\begin{code}
+  docker pull randalbryant/ssft22
+  docker run -it randalbryant/ssft22 bash
+  login ssft22 \textit{(Password = ssft22)}
+  cd unsat-tutorial
+\end{code}
+
+\subsection*{Saving your Docker Container}
+
+
+The above \texttt{docker run} command creates and runs a {\em
+  container} based on the specified Docker {\em image}.  If you exit the shell
+on your docker container,\footnote{Actually, you need to exit twice---once from your user login and once from the shell.}
+any changes you have made to any files
+would normally be lost.  Instead you must \texttt{commit} your
+container, but you can't commit back to the version on Dockerhub.
+
+Instead, you should commit to a local container.  You should do this
+before you exit the shell.  Here's the procedure:
+
+\begin{enumerate}
+\item In a separate terminal window run the command:
+  \begin{code}
+docker ps
+  \end{code}
+  to see the list of running containers.  It will look something like the following:
+\begin{code}
+CONTAINER ID   IMAGE                 COMMAND   CREATED
+16640d5ce162   randalbryant/ssft22   "bash"    8 minutes ago
+5836b1b74ccf   gcc:latest            "bash"    6 hours ago 
+\end{code}
+
+\item Perform a commit using the hexadecimal Container Id:
+\begin{code}
+docker container commit 16640d5ce162 ssft22_local
+\end{code}
+You now exit the container shell.
+
+\item You can later pick up where you left off at by executing
+\begin{code}
+docker container commit 16640d5ce162 ssft22_local
+\end{code}
+and login again.
+\end{enumerate}
+
+\end{document}
