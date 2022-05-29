@@ -127,7 +127,7 @@
 \begin{ccode}
 int abs_new(int x) \verb:{:
   int m = x>>31;
-  return x^m + ~m + 1;
+  return (x^m) + ~m + 1;
 \verb:}:
 
 int abs_ref(int x) \verb:{:
@@ -157,7 +157,7 @@ Assume for {\tt int}:
 \begin{ccode}
 int abs_new(int x) \verb:{:
   int m = x>>31;
-  return x^m + ~m + 1;
+  return (x^m) + ~m + 1;
 \verb:}:
 
 int abs_ref(int x) \verb:{:
