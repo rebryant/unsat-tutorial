@@ -325,26 +325,23 @@ Assume for {\tt int}:
 \draw[line width=3pt, -latex] (F) -- (S);
 \node[white] at (10,3.75) {~};
 
-\only<2->{
 \node[text width=1.5cm] (sat) at (8,0.75) {\large \bf solution};
 \node (topl) at (4.75,0.75) {~};
 \draw[line width=2pt, -latex] (topl) -- (sat);
-\node  at (6,1.25) {{\it satisfiable}};}
+\node  at (6,1.25) {{\it satisfiable}};
 
 
-\only<4->{
 \node[text width=1.5cm] (unsat) at (8,-0.75) {\large \bf ?};
 \node  at (6,-0.25) {{\it unsatisfiable}};
 \node (botl) at (4.75,-0.75) {~};
-\draw[line width=2pt, -latex] (botl) --(unsat);}
+\draw[line width=2pt, -latex] (botl) --(unsat);
 
-\only<3->{
 \node[rectangle, minimum height=1.5cm,minimum width=3cm, draw,fill=xgreen, rounded corners] (check) at (8.5,3) {};
 \node[white] at (8.5,3.25) {\large \bf Solution};
 \node[white] at (8.5,2.75) {\large \bf Checker};
 
 \draw[line width=3pt, -latex] (F) edge [bend left=20] (check.west);
-\draw[line width=2pt, -latex] (sat.north) -- (check.south);}
+\draw[line width=2pt, -latex] (sat.north) -- (check.south);
 
 
 \end{tikzpicture}
@@ -360,13 +357,12 @@ Assume for {\tt int}:
 \end{itemize}
 \end{minipage}
 \begin{minipage}{.58\textwidth}
-\only<5->{
 {\bf Can We Trust Them?}
 \begin{itemize}
 \item No!
 \item Complex software
 \item e.g., KISSAT: 35K lines of code
-\end{itemize}}
+\end{itemize}
 \end{minipage}
 
 
@@ -388,28 +384,22 @@ Assume for {\tt int}:
 \node[white] at (10,3.75) {~};
 \draw[line width=3pt, -latex] (F) --( S);
 
-\only<2->{
 \node[text width=1.5cm] (unsat) at (8,-0.75) {\large \bf unsatisfiability proof};
 \node  at (6,-0.25) {{\it unsatisfiable}};
 \node (botl) at (4.75,-0.75) {~};
-\draw[line width=2pt, -latex] (botl) --(unsat);}
+\draw[line width=2pt, -latex] (botl) --(unsat);
 
-\only<3->{
 \node[rectangle, minimum height=1.5cm,minimum width=3cm, draw,fill=xgreen, rounded corners] (check) at (8.5,3) {};
 \node[white] at (8.5,3.25) {\large \bf Proof};
 \node[white] at (8.5,2.75) {\large \bf Checker};
 
 \draw[line width=3pt, -latex] (F) edge [bend left=20] (check.west);
-\draw[line width=2pt, -latex] (unsat.north) -- (check.south);}
+\draw[line width=2pt, -latex] (unsat.north) -- (check.south);
 
 \end{tikzpicture}
 
 \bigskip
 \bigskip
-
-\pause
-\pause
-\pause
 
 \begin{minipage}{.49\textwidth}
 {\bf Unsatisfiability Proof}
@@ -447,7 +437,6 @@ Assume for {\tt int}:
     $\;$
   \end{minipage}  
   \begin{minipage}[t]{0.50\textwidth}
-    \only <2->{
     {\bf Unintended Consequences}
     \begin{itemize}
     \item Narrowed focus to single SAT algorithm
@@ -457,8 +446,7 @@ Assume for {\tt int}:
       \end{itemize}
     \item Other powerful solution methods have languished.
     \end{itemize}
-    }
-    \only <3>{
+    \only <2>{
     {\bf My Long-Term Goals}
     \begin{itemize}
     \item Enable proof generation for other SAT algorithms
@@ -759,16 +747,15 @@ a_1 \, x_1 + a_2 \, x_2 + \cdots + a_n \, x_n & \geq & t
 
 \begin{center}
 \begin{tikzpicture}
-\onslide<+->{
 \node at (2.5,0) {$\anot \lor b \lor \structure{x}$};
 \node at (5,0) {$\structure{\xnot} \lor c \lor \dnot$};
 \draw[thick] (1.5,-0.25) -- (6.2,-0.25);
-\node at (3.75,-0.5) {$(\anot \lor b) \lor (c \lor \dnot)$};}
-\onslide<+->{
+\node at (3.75,-0.5) {$(\anot \lor b) \lor (c \lor \dnot)$};
+\only<2->{
 \node at (1,1) {$(a \land \bnot) \rightarrow \structure{x}$};
-\node at (6.5,1) {$\structure{x} \rightarrow (c \lor \dnot)$};}
-\onslide<+->{
-\node at (3.75,-1.5) {$(a \land \bnot) \rightarrow (c \lor \dnot)$};}
+\node at (6.5,1) {$\structure{x} \rightarrow (c \lor \dnot)$};
+\node at (3.75,-1.5) {$(a \land \bnot) \rightarrow (c \lor \dnot)$};
+}
 \end{tikzpicture}
 \end{center}
 \begin{itemize}
