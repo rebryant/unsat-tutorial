@@ -9,7 +9,7 @@ int abs_bits(int x) {
 }
 
 int main() {
-    int t = rand();
+    int t = random();
     int ar = abs_ref(t);
     int ab = abs_bits(t);
     int err = ar != ab;

@@ -134,12 +134,12 @@
 
 \begin{frame}[fragile]
   \frametitle{SAT Application: Bit-Level Program Verification}
-{\large \em  \textcolor{xblue}{Are these functions equivalent?}}\\
+{\large \em  \btext{Are these functions equivalent?}}\\
 \medskip
 
 \begin{minipage}[t]{0.48\textwidth}
 \begin{ccode}
-int abs_new(int x) \verb:{:
+int abs_bits(int x) \verb:{:
   int m = x>>31;
   return (x^m) + ~m + 1;
 \verb:}:
@@ -164,12 +164,12 @@ Assume for {\tt int}:
 
 \begin{frame}[fragile]
   \frametitle{SAT Application: Bit-Level Program Verification}
-{\large \em \textcolor{xblue}{Can this program call \texttt{ERROR}?}}\\
+{\large \em \btext{Can the assertion fail?}}\\
 
 \medskip
 \begin{minipage}[t]{0.48\textwidth}
 \begin{ccode}
-int abs_new(int x) \verb:{:
+int abs_bits(int x) \verb:{:
   int m = x>>31;
   return (x^m) + ~m + 1;
 \verb:}:
@@ -184,11 +184,10 @@ int abs_ref(int x) \verb:{:
 int main() \verb:{:
   /* Value of t arbitrary */
   int t = random();
-  int vn = abs_new(t);
-  int vr = abs_ref(t);
-  int err = (vn != vr);
-  if (err != 0)
-    ERROR();
+  int ar = abs_ref(t);
+  int ab = abs_bits(t);
+  int err = (ar != ab);
+  \btext{assert(!err)};
 \verb:}:
 \end{ccode}
 \end{minipage}
