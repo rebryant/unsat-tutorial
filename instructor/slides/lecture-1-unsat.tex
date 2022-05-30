@@ -134,36 +134,6 @@
 
 \begin{frame}[fragile]
   \frametitle{SAT Application: Bit-Level Program Verification}
-{\large \em  \btext{Are these functions equivalent?}}\\
-\medskip
-
-\begin{minipage}[t]{0.48\textwidth}
-\begin{ccode}
-int abs_bits(int x) \verb:{:
-  int m = x>>31;
-  return (x^m) + ~m + 1;
-\verb:}:
-
-int abs_ref(int x) \verb:{:
-  return x < 0 ? -x : x;
-\verb:}:    
-\end{ccode}
-\end{minipage}
-\begin{minipage}[t]{0.48\textwidth}
-\begin{ccode}
-\end{ccode}
-\end{minipage}
-
-\medskip
-Assume for {\tt int}:
-  \begin{itemize}
-  \item 32-bit word
-  \item Two's complement representation
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{SAT Application: Bit-Level Program Verification}
 {\large \em \btext{Can the assertion fail?}}\\
 
 \medskip
