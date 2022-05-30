@@ -5,6 +5,7 @@ YMIN=0.005
 all: data dd pdf
 
 pdf: lecture-1a-intro.pdf  lecture-1b-proof.pdf  lecture-2a-bdd-intro.pdf  lecture-2b-bdd-proof.pdf \
+	lecture-1-unsat.pdf lecture-2-bdd.pdf
 
 spdf: lecture-1a-summary.pdf lecture-1b-summary.pdf lecture-2a-summary.pdf lecture-2b-summary.pdf 
 

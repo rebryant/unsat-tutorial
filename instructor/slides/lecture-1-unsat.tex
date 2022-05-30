@@ -15,6 +15,7 @@
 \usepackage{pgfplots}
 \usepackage{booktabs}
 \usepackage{alltt}
+\usepackage{bm}
 
 \newenvironment{ccode}{\begin{alltt}\footnotesize}{\end{alltt}}
 
@@ -33,9 +34,22 @@
 \definecolor{xred}{rgb}{0.77, 0.12, 0.23}
 \definecolor{xgreen}{rgb}{0.3, 0.6, 0}
 \definecolor{xblue}{rgb}{0., 0.25, 1}
+\definecolor{xgray}{rgb}{0.7, 0.7, 0.7}
 
 
-\title{Trustworthy Boolean Reasoning \\ 1A: (Un)Satisfiability}
+\newcommand{\rtext}[1]{\textcolor{xred}{#1}}
+\newcommand{\btext}[1]{\textcolor{xblue}{#1}}
+\newcommand{\gtext}[1]{\textcolor{xgray}{#1}}
+
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\keyif}{\keyword{if}}
+\newcommand{\keywhile}{\keyword{while}}
+\newcommand{\keytrue}{\keyword{True}}
+\newcommand{\keybreak}{\keyword{break}}
+\newcommand{\keyreturn}{\keyword{return}}
+\newcommand{\assign}{\ensuremath{\longleftarrow}}
+
+\title{Trustworthy Boolean Reasoning 1: \\ (Un)Satisfiability and Proofs}
 %\subtitle{}
 \author{Randal E. Bryant}
 
@@ -893,5 +907,520 @@ a_1 \, x_1 + a_2 \, x_2 + \cdots + a_n \, x_n & \geq & t
 } %% FRAME
 
 
+
+
+\begin{frame}
+\frametitle{Unit Propagation}
+
+{\bf Unit clauses}
+\begin{itemize}
+  \item If formula contains clause $(x)$, then $x$ must be assigned $1$.
+  \item If formula contains clause $(\obar{x})$, then $x$ must be assigned $0$.
+\end{itemize}
+{\bf Propagating Unit Literal $\ell$}
+\begin{itemize}
+\item If $\ell \in C$ and $\ell=0$, then $C \leftarrow C-\{\ell\}$
+\item If $\ell \in C$ and $\ell=1$, then $C$ satisfied
+\item If any clause becomes unit, then iterate
+\end{itemize}
+
+\centering{
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{ccc}
+    \toprule
+    \makebox[.5in]{Step} & \makebox[3in]{Formula} & \makebox[.5in]{Units} \\
+    \midrule
+    1 & $\bm{(a \lor \cnot) \land (\anot \lor \bnot \lor \cnot) \land (a \lor b \lor c) \land (c)}$ & $c = 1$ \\
+    2 & $\bm{(a \lor \gtext{\cnot}) \land (\anot \lor \bnot \lor \gtext{\cnot}) \land (a \lor b \lor \rtext{c}) \land (\rtext{c})}$ & $a = 1$ \\
+    3 & $\bm{(\rtext{a} \lor \gtext{\cnot}) \land (\gtext{\anot} \lor \bnot \lor \gtext{\cnot}) \land (\rtext{a} \lor b \lor \rtext{c}) \land (\rtext{c})}$ & $b = 0$ \\
+    -- & $\bm{(\rtext{a} \lor \gtext{\cnot}) \land (\gtext{\anot} \lor \rtext{\bnot} \lor \gtext{\cnot}) \land (\rtext{a} \lor \gtext{b} \lor \rtext{c}) \land (\rtext{c})}$ &  \\
+    \bottomrule
+  \end{tabular}
+} % Centering
+\end{frame}
+
+\begin{frame}
+  \frametitle{Basic CDCL Operation}
+
+  {\bf Conflict-Driven Clause Learning}
+  \begin{itemize}
+    \item Algorithm in state-of-the art solvers
+    \item Search, but learn from dead ends
+  \end{itemize}
+
+\begin{tabbing}
+xxxxxx\=xxxx\=xxxx\=xxxx\=\kill
+\>\keywhile(\keytrue): \\
+\>\>${\it depth}\; \assign \;0$ \\
+\>\>\keywhile(\keytrue): \\
+\>\>\>UnitPropagate() \\
+\>\>\>\keyif{} all clauses satisfied \\
+\>\>\>\>\keyreturn{} solution\\
+\>\>\>\keyif{} ConflictDetected(): \\
+\>\>\>\>Generate conflict clause \\
+\>\>\>\>\keybreak{} \\
+\>\>\>Choose variable and assign $0$ or $1$\\
+\>\>\>${\it depth} \;\assign \; {\it depth} + 1$ \\
+\>\>\keyif{} ${\it depth} = 0$: \\
+\>\>\>\keyreturn{} UNSAT\\
+\end{tabbing}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{CDCL Execution Example}
+\begin{itemize}
+\item
+  \only<1>{No initial unit propagations}
+  \only<2>{Setting $b=0$ causes conflict.  Learn clause $b$.}
+  \only<3>{Unit propagate $b$.  No conflict}
+  \only<4>{Setting $c=1$ causes conflict.  Learn clause $\cnot$.}  
+  \only<5>{Unit propagate $b$ and $\cnot$.  Causes conflict.  UNSAT!}
+\end{itemize}
+\medskip
+\begin{minipage}{0.4\textwidth}
+\input{cdcl-dd/cdcl}
+\end{minipage}
+\begin{minipage}[t]{0.57\textwidth}
+  \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{clc}
+      \toprule
+      \makebox[0.5in]{ID} & \makebox[0.75in][l]{Clause} & \makebox[0.5in][c]{UProp?} \\
+      \midrule
+      1 & ${\anot \lor \bnot \lor \cnot}$ & \only<4>{*}  \\
+      2 & ${\anot \lor \bnot \lor c}$     & \only<5>{*} \\
+      3 & ${a \lor \dnot}$                & \only<4-5>{*} \\
+      4 & ${a \lor d}$                    & \only<4-5>{*} \\
+      5 & ${b \lor \dnot}$                & \only<2>{*} \\
+      6 & ${b \lor d}$                    &  \only<2>{*} \\
+      \bottomrule
+  \only<2->{7} & \only<2->{${b}$}        & \only<4-5>{*} \\
+  \only<4->{8} & \only<4->{${\cnot}$}    & \only<5>{*} \\
+  \only<5->{9} & \only<5->{${\bot}$}     & \\
+    \end{tabular}
+\end{minipage}
+\end{frame}
+
+\frame{
+  \frametitle{Proof from CDCL Run}
+
+{\bf Proof Follows Branching Structure of CDCL}
+
+\medskip
+
+\begin{minipage}{0.98\textwidth}
+\begin{minipage}{0.3\textwidth}
+\input{cdcl-dd/cdcl-flip}
+\end{minipage}
+\begin{minipage}{0.65\textwidth}
+\begin{tikzpicture}[scale = 0.6]
+\node at (5.5,4.0) {$a \lor d$};
+\node at (7.5,4.0) {$a \lor \dnot$};
+\draw[thick] (4.5,3.5) -- (8.5,3.5);
+\node at (5.0,3.0) {$a$};
+\node at (8.0,3.0) {$a$};
+
+\node at (3.0,3.0) {$\anot \lor \bnot \lor c$};
+\draw[thick] (2.0,2.5) -- (5.5,2.5);
+\node at (4.0,2.0) {$\bnot \lor c$};
+
+\node at (10.0,3.0) {$\anot \lor \bnot \lor \cnot$};
+\draw[thick] (7.5,2.5) -- (11.0,2.5);
+\node at (9.0,2.0) {$\bnot \lor \cnot$};
+\draw[thick] (3.5,1.5) -- (9.5,1.5);
+\node at (6.5,1.0) {$\bnot$};
+
+\node at (12.0,2.0) {$b \lor \dnot$};
+\node at (14.0,2.0) {$b \lor d$};
+\draw[thick] (11.5,1.5) -- (14.5,1.5);
+\node at (13.0,1.0) {$b$};
+\draw[thick] (6.0,0.5) -- (13.5,0.5);
+\node at (9.750,0.0) {$\bot$};
+\end{tikzpicture}
+\end{minipage}
+\end{minipage}
+
+
+} %% FRAME
+
+\begin{frame}
+  \frametitle{Reverse Unit Propagation (RUP)}
+
+  {\bf Purpose}
+  \begin{itemize}
+  \item Simple and efficient rule for use by proof checkers
+  \item Good match to operation of CDCL solvers
+  \end{itemize}
+
+  {\bf Operation}
+  \begin{itemize}
+  \item Each RUP application forms one step of unsatisfiability proof
+  \item Performs a linear sequence of resolutions steps + subsumption
+  \end{itemize}
+
+  {\bf Objective}
+  \begin{itemize}
+    \item \makebox[1.35in][l]{$C = \{\ell_1, \ell_2, \ldots, \ell_m\}$} Clause to be added to proof
+    \item \makebox[1.35in][l]{$D_1, D_2, \ldots, D_k$} Previous clauses (``Antecedents'')
+    \item Prove: $D_1 \land D_2 \land \cdots \land D_k \rightarrow C$ 
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Reverse Unit Propagation (RUP)}
+
+  {\bf Objective}
+  \begin{itemize}
+    \item \makebox[1.35in][l]{$C = \{\ell_1, \ell_2, \ldots, \ell_m\}$} Clause to be added to proof
+    \item \makebox[1.35in][l]{$D_1, D_2, \ldots, D_k$} Previous clauses (``Antecedents'')
+    \item Prove: $D_1 \land D_2 \land \cdots \land D_k \rightarrow C$ 
+  \end{itemize}
+{\bf Method}
+\begin{itemize}
+\item Assume $\neg C = \obar{\ell}_1 \land \obar{\ell}_2 \land \cdots \land \obar{\ell}_m$
+  \begin{itemize}
+    \item $m$ unit clauses!
+  \end{itemize}
+\item Show contradiction with $D_1 \land D_2 \land \cdots \land D_k$ 
+  \begin{itemize}
+  \item Accumulate unit clauses, starting with those for $\neg C$.
+  \item Accrue more unit clauses from $D_1, D_2, \ldots, D_{k-1}$.
+  \item When encounter $D_k$, should have contradiction
+  \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{RUP Proof Example}
+\centering{
+  \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{cll}
+      \toprule
+      \makebox[0.5in]{ID} & \makebox[0.75in][l]{Clause} & \makebox[1in][c]{Antecedents} \\
+      \midrule
+      $C_1$ & ${\anot \lor \bnot \lor \cnot}$ & \\
+      $C_2$ & ${\anot \lor \bnot \lor c}$     & \\
+      $C_3$ & ${a \lor \dnot}$                & \\
+      $C_4$ & ${a \lor d}$                    & \\
+      $C_5$ & ${b \lor \dnot}$                & \\
+      $C_6$ & ${b \lor d}$                    & \\
+      \bottomrule
+  \only<2->{$C_7$} & \only<2->{${b}$}        & \only<2->{$C_5, C_6$} \\
+  \only<3->{$C_8$} & \only<3->{${\cnot}$}    & \only<3->{$C_7, C_1, C_3, C_4$} \\
+  \only<4->{$C_9$} & \only<4->{${\bot}$}     & \only<4->{$C_7, C_8, C_2, C_3, C_4$} \\
+    \end{tabular}
+}
+\vskip -10pt
+\only<2>{
+\begin{tabular}{c|ccccccccccc}
+  \multicolumn{1}{c}{\makebox[0.2in]{}} &
+  \makebox[0.10in]{} &   \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{}
+  &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} \\
+          & \rtext{$\bnot$} &        & \rtext{$\dnot$} &       & \rtext{$\bot$} \\
+      $b$ &         & $C_5$  &         & $C_6$ &  \\
+\end{tabular}
+}
+\only<3>{
+\begin{tabular}{c|ccccccccccc}
+  \multicolumn{1}{c}{\makebox[0.2in]{}} &
+  \makebox[0.10in]{} &   \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{}
+  &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} \\
+              &     \rtext{$c$} &        & \rtext{$b$}     &       & \rtext{$\anot$} &       & \rtext{$\dnot$} &        & \rtext{$\bot$} \\
+      $\cnot$ &         & $C_7$  &         & $C_1$ &         & $C_3$ &         & $C_4$ \\
+\end{tabular}
+}
+\only<4>{
+\begin{tabular}{c|ccccccccccc}
+  \multicolumn{1}{c}{\makebox[0.2in]{}} &
+  \makebox[0.10in]{} &   \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{}
+  &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} &  \makebox[0.10in]{} \\
+              &         &        & \rtext{$b$}     &       & \rtext{$\cnot$} &       & \rtext{$\anot$} &        & \rtext{$\dnot$} &    & \rtext{$\bot$} \\
+      $\bot$  &         & $C_7$  &         & $C_8$ &         & $C_2$ &         & $C_3$   &         & $C_4$      \\
+\end{tabular}
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proof File Examples}
+
+\centering{
+   \begin{tabular}{cll}
+   \multicolumn{3}{l}{Proof} \\
+  \midrule
+  \makebox[0.5in][c]{$C_7$} & \makebox[0.75in][l]{${b}$}        & \makebox[1in][l]{$C_5, C_6$} \\
+  {$C_8$} & {${\cnot}$}    & {$C_7, C_1, C_3, C_4$} \\
+  {$C_9$} & {${\bot}$}     & {$C_7, C_8, C_2, C_3, C_4$} \\
+  \bottomrule
+  &&\\
+  \multicolumn{3}{l}{DRAT Proof File} \\
+  \toprule 
+          & {\tt 2 0} & \\
+          & {\tt -3 0} & \\
+          & {\tt 0} & \\
+  \bottomrule
+  && \\
+  \multicolumn{3}{l}{LRAT Proof File} \\
+  \toprule 
+     {\tt 7}     & {\tt 2 0} & {\tt 5 6 0}\\
+     {\tt 8}     & {\tt -3 0} & {\tt 7 1 3 4 0}\\
+     {\tt 9}     & {\tt 0} &   {\tt 7 8 2 3 4 0}\\
+  \bottomrule 
+  \end{tabular}
+}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Proof Checking Infrastructure}
+
+  \begin{tikzpicture}[scale=0.37]
+  \draw[fill=xred] (5,3) rectangle (9,7);
+  \node[white] at (7,5.7) {\bf SAT};
+  \node[white] at (7,4.3) {\bf solver};
+  \draw[fill=xgreen] (13,4) rectangle (17,8);
+  \node[white] at (15,6.7) {\bf DRAT};
+  \node[white] at (15,5.3) {\bf TRIM};
+  \draw[fill=xgreen] (21,4) rectangle (25,8);
+  \node[white] at (23,6.7) {\bf LRAT};
+  \node[white] at (23,5.3) {\bf checker};
+  \draw[thick,-latex] (1,9) -- (19,9) -- (19,7) -- (21,7);
+  \draw[thick,-latex] (11,9) -- (11,7) -- (13,7);
+  \draw[thick,-latex] (3,9) -- (3,5) -- (5,5);
+  \draw[thick,-latex] (9,5) -- (13,5);
+  \draw[thick,-latex] (17,5) -- (21,5);
+  \draw[thick,-latex] (25,6) -- (27,6);
+  \node at (0,9) {$\phi$};
+  \node at (28,6) {Y/N};
+  \node at (2,10) {\tt .cnf};
+  \node at (11,6) {\tt .drat};
+  \node at (19,6) {\tt .lrat};
+  \end{tikzpicture}
+
+ {\bf Operation:}
+  \begin{itemize}
+   \item {\sc Drat-Trim} adds antecedents to proof steps
+   \item LRAT checker simply checks each proof step
+  \end{itemize}  
+{\bf LRAT Checkers:}
+\begin{itemize}
+\item {\sc lrat-check} written in C.
+\begin{itemize}
+\item Fast and high capacity
+\item Designed to be simple enough to easily understand
+\end{itemize}
+\item Formally verified ones.  Built on ACL2, Coq, HOL, \ldots
+\begin{itemize}
+\item Integrity not compromised if solver or {\sc drat-trim} has bug
+\end{itemize}
+  
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Resolution and CDCL}
+  
+{\bf CDCL $\approx$ Resolution}
+\begin{itemize}
+\item \makebox[0.75in][l]{{\em Strength:}}CDCL solver can readily generate resolution  proofs 
+\item \makebox[0.75in][l]{{\em Weakness:}}Lower bound on performance
+\end{itemize}
+\medskip
+
+{\bf Example: Pigeonhole Principle(PHP)}
+\begin{itemize}
+\item Problem:
+  \begin{itemize}
+    \item $n$ holes, $n+1$ pigeons
+    \item Assign pigeons to holes:
+      \begin{itemize}
+      \item Each pigeon is assigned to some hole
+      \item Each hole has at most one pigeon
+      \end{itemize}
+  \end{itemize}
+ \item SAT Encoding:
+   \begin{itemize}
+     \item Variables: $p_{i,j}$: Pigeon $j$ in hole $i$.  $1 \leq i \leq n$, $1 \leq j \leq n+1$. 
+     \item $n+1$ at-least-one constraints
+     \item $n$ at-most-one constraints
+     \item $O(n^3)$ total clauses
+%%     \item For $1 \leq j \leq n+1$: ${\it AtLeastOne}(p_{1,j}, p_{2,j}, \ldots, p_{n,j})$
+%%     \item For $1 \leq i \leq n$: ${\it AtMostOne}(p_{i,1}, p_{i,2}, \ldots, p_{i,n+1})$
+   \end{itemize}
+\item PHP($n$) resolution proofs are exponential in $n$ [Haken, 1985]
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+
+  \frametitle{Parity Benchmark}
+
+\begin{itemize}
+\item Chew and Heule, SAT 2020
+
+\item For random permtuation $\pi$:
+\end{itemize}
+  \begin{displaymath}
+    \begin{array}{cccccccccl}
+    x_1 & \oplus & x_2 & \oplus & \cdots & \oplus & x_n & = & 1 & {\sf \;\; Odd \; parity}\\
+    x_{\pi(1)} &  \oplus &  x_{\pi(2)} &  \oplus &  \cdots &  \oplus &  x_{\pi(n)} & = & 0& {\sf \;\; Even \; parity}\\
+    \end{array}
+  \end{displaymath}
+
+  \begin{itemize}
+    \item Conjunction unsatisfiable
+    \item Very challenging for CDCL solvers
+    \item Unit propagation of limited value
+      \begin{itemize}
+        \item $k$-way parity constraint
+        \item Only propagate when $k-1$ variables assigned
+      \end{itemize}
+  \end{itemize}  
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Parity Benchmark Runtime}
+
+\centering{%
+\begin{tikzpicture}[scale = .80]
+          \begin{axis}[mark options={scale=0.5},grid=both, grid style={black!10}, ymode=log, ymin=0.01, ymax=600.0, xmode=log, legend style={at={(0.95,0.35)}}, legend cell align={left},
+                              x post scale=1.6,
+                              ytick={0.01,0.1, 1.0, 10.0, 100.0, 600.0}, yticklabels={$0.01$,$0.1$,$1.0$,$10.0$,$100.0$,$600.0$},
+                              xtick={10,100,1000,10000,100000}, xticklabels={$10$,$100$,$1{,}000$,$10{,}000$,$100{,}000$},xmin=10,xmax=100000,
+            %%                  title={Parity Benchmark Runtime}
+            ]
+       \input{data-formatted/chew-kissat-seconds}
+            \legend{\small \textsf{KISSAT}}
+          \end{axis}
+\end{tikzpicture}
+}
+
+\begin{itemize}
+\item KISSAT: State-of-the-art CDCL solver
+\item Tried 3-different seeds for each value of $n$
+\item Limited to $n \leq 42$ within 600 seconds
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Extended Resolution}
+  
+\begin{itemize}
+\item Tseitin, 1967
+\end{itemize}
+
+{\bf Can introduce extension variables}
+\begin{itemize}
+\item Variable $z$ that has not yet occurred in proof
+\item Must add {\em defining} clauses
+\begin{itemize}
+\item Encode constraint of form $z \leftrightarrow F$
+\item Boolean formula $z$ over input and earlier extension variables
+\end{itemize}
+\end{itemize}
+
+\vspace{20pt}
+
+{\bf Extension variable $z$ becomes shorthand for formula $F$}
+  \begin{itemize}
+  \item Repeated use can yield exponentially smaller proof
+  \end{itemize}
+
+  {\bf Similar to use of encoding variables in SAT formulas}
+  \begin{itemize}
+  \item That's why they're called ``Tseitin variables''
+  \item But here they become part of proof, not of input formula
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Extended RUP Proof Example}
+\begin{center}
+  \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{cll}
+      \toprule
+      \makebox[0.5in]{ID} & \makebox[0.75in][l]{Clause} & \makebox[1in][c]{Antecedents} \\
+      \midrule
+      $C_1$ & ${\anot \lor \bnot \lor \cnot}$ & \\
+      $C_2$ & ${\anot \lor \bnot \lor c}$     & \\
+      $C_3$ & ${a \lor \dnot}$                & \\
+      $C_4$ & ${a \lor d}$                    & \\
+      $C_5$ & ${b \lor \dnot}$                & \\
+      $C_6$ & ${b \lor d}$                    & \\
+    \bottomrule
+    \end{tabular}
+\end{center}
+
+    {\bf Strategy}
+    \begin{itemize}
+    \item Use $z$ to encode $a \land b$.
+    \item E.g., $C_1$ becomes $\znot \lor \cnot$.
+    \end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Extended RUP Proof Example}
+\centering{
+  \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{cll}
+      \toprule
+      \makebox[0.5in]{ID} & \makebox[0.75in][l]{Clause} & \makebox[1in][c]{Antecedents} \\
+      \midrule
+      $C_1$ & ${\anot \lor \bnot \lor \cnot}$ & \\
+      $C_2$ & ${\anot \lor \bnot \lor c}$     & \\
+      $C_3$ & ${a \lor \dnot}$                & \\
+      $C_4$ & ${a \lor d}$                    & \\
+      $C_5$ & ${b \lor \dnot}$                & \\
+      $C_6$ & ${b \lor d}$                    & \\
+    \bottomrule
+  \only<1->{$C_7$} & \only<1->{$\znot \lor a$}  & \only<1->{Defining Clauses} \\
+  \only<1->{$C_8$} & \only<1->{$\znot \lor b$}  & \only<1->{} \\
+  \only<1->{$C_9$} & \only<1->{$z \lor \anot \lor \bnot$}  & \only<1->{} \\  
+
+  \only<2->{$C_{10}$} & \only<2->{$\znot \lor \cnot$}  & \only<2->{$C_7, C_8, C_1$} \\
+  \only<2->{$C_{11}$} & \only<2->{$\znot$}  & \only<2->{$C_7, C_8, C_2, C_{10}$} \\
+  \only<2->{$C_{12}$} & \only<2->{$d$}  & \only<2->{$C_4, C_6, C_9,C_{11}$} \\
+  \only<2->{$C_{13}$} & \only<2->{$\bot$}  & \only<2->{$C_{12}, C_3, C_5, C_9, C_{11}$} \\
+
+    \end{tabular}
+}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Can Extended Resolution Yield Faster SAT Solvers?}
+  
+  {\bf PHP Proof Complexity}
+  \begin{itemize}
+  \item Exponential for ordinary resolution
+  \item $O(n^4)$ for extended resolution [Cook, 1976]
+  \end{itemize}
+
+  {\bf Use in SAT?}
+  \begin{itemize}
+  \item No clear way to choose which formulas to abbreviate
+  \item No clear way to shorten search by using abbreviations
+  \end{itemize}
+
+\end{frame}
+
+
 \end{document}
+
 
