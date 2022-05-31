@@ -17,7 +17,7 @@ Exploring the ability of Boolean satisfiability solvers to produce a proofs of u
       Licensing terms shown in drat-trim/LICENSE.
 
     - `tbuddy`
-      Code for the TBUDDY trused BDD package and the TBSAT solver
+      Code for the TBUDDY trusted BDD package and the TBSAT solver
       Extracted from https://github.com/rebryant/tbuddy-artifact
 
   - `instructor`
