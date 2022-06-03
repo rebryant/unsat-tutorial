@@ -166,13 +166,13 @@ Draw the BDD having node \texttt{N21} as root.
 \solution{1.5in}{\begin{center}\input{dd/n21.tex}\end{center}}
 \item
 Looking at the paths from the root to Leaf 1 in this BDD, what
-constraint do these place on the relation between  $a$ and $b$?
-\solution{1in}{The only two paths require that $a=b$.}
+constraint do these place on the relation between  $a$ and $c$?
+\solution{1in}{The only two paths require that $a = c$.}
 \item
 What does that constraint imply when the conjunction of the BDDs with roots \texttt{N21} and \texttt{N18} is formed?
 \solution{1in}{
-The BDD with root \texttt{N18} is a representation of $a \oplus b$,
-and so it requires $a \not = b$.  Their conjunction is
+The BDD with root \texttt{N18} is a representation of $a \oplus c$,
+and so it requires $a \not = c$.  Their conjunction is
 therefore $\bot$.
 }
 \end{choice}
